@@ -55,11 +55,11 @@ class _ProdukPageState extends State<ProdukPage> {
         child: Column(children: [
           searchProduk(context),
           const SizedBox(
-            height: defaultPadding,
+            height: contentPadding,
           ),
           const KategoriFilter(),
           const SizedBox(
-            height: defaultPadding,
+            height: contentPadding,
           ),
           Expanded(child: listProduk())
         ]),

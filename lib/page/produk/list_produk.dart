@@ -7,74 +7,38 @@ import 'package:pos_app/model/produk_model.dart';
 import 'package:pos_app/page/produk/edit_produk.dart';
 
 Widget listProduk() {
-  return Card(
-    elevation: 5,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(defaultRadius),
-      //set border radius more than 50% of height and width to make circle
-    ),
-    child: Padding(
-      padding: const EdgeInsets.all(defaultPadding),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(
-            height: defaultPadding,
-          ),
-          const Text(
-            'Produk',
-            style: TextStyle(
-                fontSize: 16, fontWeight: FontWeight.bold, color: textColor),
-          ),
-          const SizedBox(
-            height: defaultPadding,
-          ),
-          const Divider(
-            color: textColor,
-          ),
-          const SizedBox(
-            height: defaultPadding,
-          ),
-          Expanded(
-            child:
-                BlocBuilder<ProdukBloc, ProdukState>(builder: (context, state) {
-              if (state is ProdukLoading) {
-                return Container(
-                  padding: const EdgeInsets.all(defaultPadding),
-                  child: const Center(
-                      child: CircularProgressIndicator(
-                    backgroundColor: primaryColor,
-                  )),
-                );
-              } else {
-                ProdukLoaded produkLoaded = state as ProdukLoaded;
+  return BlocBuilder<ProdukBloc, ProdukState>(builder: (context, state) {
+    if (state is ProdukLoading) {
+      return Container(
+        padding: const EdgeInsets.all(defaultPadding),
+        child: const Center(
+            child: CircularProgressIndicator(
+          backgroundColor: primaryColor,
+        )),
+      );
+    } else {
+      ProdukLoaded produkLoaded = state as ProdukLoaded;
 
-                if (produkLoaded.data.isNotEmpty) {
-                  return ListView.builder(
-                    itemCount: produkLoaded.data.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return produkTile(
-                          detailData: produkLoaded.data[index],
-                          context: context);
-                    },
-                  );
-                } else {
-                  return Container(
-                    padding: const EdgeInsets.all(defaultPadding),
-                    child: const Center(
-                      child: Text('Belum ada data'),
-                    ),
-                  );
-                }
-
-                //
-              }
-            }),
+      if (produkLoaded.data.isNotEmpty) {
+        return ListView.builder(
+          itemCount: produkLoaded.data.length,
+          itemBuilder: (BuildContext context, int index) {
+            return produkTile(
+                detailData: produkLoaded.data[index], context: context);
+          },
+        );
+      } else {
+        return Container(
+          padding: const EdgeInsets.all(defaultPadding),
+          child: const Center(
+            child: Text('Belum ada data'),
           ),
-        ],
-      ),
-    ),
-  );
+        );
+      }
+
+      //
+    }
+  });
 }
 
 Widget produkTile({required Produk detailData, required BuildContext context}) {

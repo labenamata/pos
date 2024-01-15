@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as bawah;
 import 'package:pos_app/bloc/bahan_bloc.dart';
 import 'package:pos_app/bloc/recipe_bloc.dart';
@@ -48,36 +49,49 @@ class _EditRecipeState extends State<EditRecipe> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: backgroundcolor,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: primaryColor,
-        title: Text(
-          widget.nama,
-          style: const TextStyle(color: textColor),
-        ),
-        centerTitle: true,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
-            child: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(Icons.check_rounded)),
-          )
-        ],
-      ),
-      body: Container(
-        padding: const EdgeInsets.all(defaultPadding),
-        child: Column(children: [
-          buildBahan(),
-          const SizedBox(
-            height: defaultPadding,
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: backgroundcolor,
+        appBar: AppBar(
+          elevation: 1,
+          backgroundColor: backgroundcolor,
+          title: Text(
+            widget.nama,
+            style: const TextStyle(color: textColor),
           ),
-          Expanded(child: buildRecipe())
-        ]),
+          leading: // Ensure Scaffold is in context
+              IconButton(
+                  icon: const Icon(
+                    LineIcons.angleLeft,
+                    color: textColor,
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  }),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
+              child: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(
+                    LineIcons.check,
+                    color: textColor,
+                  )),
+            )
+          ],
+        ),
+        body: Container(
+          padding: const EdgeInsets.all(defaultPadding),
+          child: Column(children: [
+            buildBahan(),
+            const SizedBox(
+              height: defaultPadding,
+            ),
+            Expanded(child: buildRecipe())
+          ]),
+        ),
       ),
     );
   }
@@ -204,184 +218,166 @@ class _EditRecipeState extends State<EditRecipe> {
     );
   }
 
-  Container buildBahan() {
-    return Container(
-      padding: const EdgeInsets.all(defaultPadding),
-      decoration: const BoxDecoration(
-          color: secondaryColor,
-          borderRadius: BorderRadius.all(Radius.circular(defaultRadius))),
-      child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(
-              height: defaultPadding,
-            ),
-            const Text(
-              'Bahan Baku',
-              style: TextStyle(
-                  fontSize: 16, fontWeight: FontWeight.bold, color: textColor),
-            ),
-            const SizedBox(
-              height: defaultPadding,
-            ),
-            const Divider(
-              color: primaryColor,
-            ),
-            const SizedBox(
-              height: defaultPadding,
-            ),
-            const Text(
-              'Nama Bahan Baku',
-              style: TextStyle(color: textColor),
-            ),
-            const SizedBox(
-              height: defaultPadding,
-            ),
-            Material(
-              color: secondaryColor,
-              child: InkWell(
-                splashColor: textColor,
-                onTap: () {
-                  bawah.showMaterialModalBottomSheet(
-                    expand: false,
-                    context: context,
-                    backgroundColor: Colors.transparent,
-                    builder: (context) {
-                      return buildAddBahan(context);
-                    },
-                  );
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(defaultPadding),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: primaryColor),
-                    borderRadius:
-                        const BorderRadius.all(Radius.circular(defaultPadding)),
-                  ),
-                  child: Row(children: [
-                    idBahan == 0
-                        ? const Text(
-                            'Cari',
-                            style: TextStyle(color: textColor),
-                          )
-                        : Text(
-                            nama,
-                            style: const TextStyle(color: textColor),
-                          ),
-                    const Spacer(),
-                    const Icon(
-                      Icons.search_rounded,
-                      color: primaryColor,
-                    )
-                  ]),
+  Column buildBahan() {
+    return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Row(
+            children: [
+              Text(
+                'Bahan Baku',
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: textColor),
+              ),
+              Spacer(),
+            ],
+          ),
+          const Divider(
+            color: primaryColor,
+          ),
+          const SizedBox(
+            height: contentPadding,
+          ),
+          const Text(
+            'Nama Bahan Baku',
+            style: TextStyle(color: textColor),
+          ),
+          const SizedBox(
+            height: defaultPadding,
+          ),
+          Material(
+            color: secondaryColor,
+            child: InkWell(
+              splashColor: textColor,
+              onTap: () {
+                bawah.showMaterialModalBottomSheet(
+                  expand: false,
+                  context: context,
+                  backgroundColor: Colors.transparent,
+                  builder: (context) {
+                    return buildAddBahan(context);
+                  },
+                );
+              },
+              child: Container(
+                padding: const EdgeInsets.all(defaultPadding),
+                decoration: BoxDecoration(
+                  border: Border.all(color: primaryColor),
+                  borderRadius:
+                      const BorderRadius.all(Radius.circular(defaultPadding)),
                 ),
+                child: Row(children: [
+                  idBahan == 0
+                      ? const Text(
+                          'Cari',
+                          style: TextStyle(color: textColor),
+                        )
+                      : Text(
+                          nama,
+                          style: const TextStyle(color: textColor),
+                        ),
+                  const Spacer(),
+                  const Icon(
+                    Icons.search_rounded,
+                    color: primaryColor,
+                  )
+                ]),
               ),
             ),
-            const SizedBox(
-              height: defaultPadding,
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Usage',
-                        style: TextStyle(color: textColor),
+          ),
+          const SizedBox(
+            height: defaultPadding,
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  focusNode: focusUsage,
+                  controller: usageController,
+                  cursorColor: primaryColor,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                      suffixText: satuan,
+                      label: const Text('Usage'),
+                      labelStyle: const TextStyle(color: primaryColor),
+                      contentPadding:
+                          const EdgeInsets.symmetric(vertical: contentPadding),
+                      isDense: true,
+                      enabledBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(width: 1, color: textColor),
                       ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: defaultPadding),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: primaryColor),
-                          borderRadius: const BorderRadius.all(
-                              Radius.circular(defaultPadding)),
-                        ),
-                        child: TextField(
-                          focusNode: focusUsage,
-                          textAlign: TextAlign.right,
-                          controller: usageController,
-                          cursorColor: primaryColor,
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                              isDense: true, border: InputBorder.none),
-                        ),
-                      ),
-                    ],
-                  ),
+                      focusedBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(width: 1, color: primaryColor),
+                      )),
                 ),
-                const SizedBox(
-                  width: defaultPadding,
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Satuan',
-                        style: TextStyle(color: textColor),
-                      ),
-                      Center(
-                        child: Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.all(defaultPadding),
-                            decoration: BoxDecoration(
-                              border: Border.all(color: primaryColor),
-                              borderRadius: const BorderRadius.all(
-                                  Radius.circular(defaultPadding)),
-                            ),
-                            child: Text(
-                              satuan,
-                              style: const TextStyle(color: textColor),
-                            )),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: defaultPadding,
-            ),
-            Row(
-              children: [
-                const Spacer(),
-                ElevatedButton.icon(
-                    style:
-                        ElevatedButton.styleFrom(backgroundColor: primaryColor),
-                    onPressed: () {
-                      RecipeBloc recipeBloc =
-                          BlocProvider.of<RecipeBloc>(context);
-                      if (idBahan != 0) {
-                        if (usageController.text.isNotEmpty) {
-                          recipeBloc.add(TambahRecipe(
-                            idProduk: widget.idProduk,
-                            idBahan: idBahan,
-                            usage: double.parse(usageController.text),
-                          ));
-                          setState(() {
-                            idBahan = 0;
-                            nama = '';
-                            satuan = '';
-                          });
+              ),
+              const SizedBox(
+                width: defaultPadding,
+              ),
+              ElevatedButton.icon(
+                  style:
+                      ElevatedButton.styleFrom(backgroundColor: primaryColor),
+                  onPressed: () {
+                    RecipeBloc recipeBloc =
+                        BlocProvider.of<RecipeBloc>(context);
+                    if (idBahan != 0) {
+                      if (usageController.text.isNotEmpty) {
+                        recipeBloc.add(TambahRecipe(
+                          idProduk: widget.idProduk,
+                          idBahan: idBahan,
+                          usage: double.parse(usageController.text),
+                        ));
+                        setState(() {
+                          idBahan = 0;
+                          nama = '';
+                          satuan = '';
+                        });
 
-                          usageController.text = '';
-                          focusUsage.unfocus();
-                        } else {
-                          focusUsage.requestFocus();
-                        }
+                        usageController.text = '';
+                        focusUsage.unfocus();
+                      } else {
+                        focusUsage.requestFocus();
                       }
+                    }
 
-                      // Navigator.pop(context);
-                    },
-                    icon: const Icon(Icons.save_rounded),
-                    label: const Text('Tambah')),
-              ],
-            )
-          ]),
-    );
+                    // Navigator.pop(context);
+                  },
+                  icon: const Icon(LineIcons.plus),
+                  label: const Text('Tambah')),
+              // Expanded(
+              //   child: Column(
+              //     crossAxisAlignment: CrossAxisAlignment.start,
+              //     children: [
+              //       const Text(
+              //         'Satuan',
+              //         style: TextStyle(color: textColor),
+              //       ),
+              //       Center(
+              //         child: Container(
+              //             width: double.infinity,
+              //             padding: const EdgeInsets.all(defaultPadding),
+              //             decoration: BoxDecoration(
+              //               border: Border.all(color: primaryColor),
+              //               borderRadius: const BorderRadius.all(
+              //                   Radius.circular(defaultPadding)),
+              //             ),
+              //             child: Text(
+              //               satuan,
+              //               style: const TextStyle(color: textColor),
+              //             )),
+              //       ),
+              //     ],
+              //   ),
+              // ),
+            ],
+          ),
+          const SizedBox(
+            height: defaultPadding,
+          ),
+        ]);
   }
 
   Material buildAddBahan(BuildContext context) {

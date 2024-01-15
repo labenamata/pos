@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_editor/image_editor.dart' hide ImageSource;
+import 'package:line_icons/line_icons.dart';
 import 'package:pos_app/bloc/image_bloc.dart';
 import 'package:pos_app/constant.dart';
 
@@ -69,17 +70,17 @@ class _PreviewPageState extends State<PreviewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: secondaryColor,
       appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: primaryColor,
+        elevation: 1,
+        backgroundColor: backgroundcolor,
         title: const Text(
           'Preview Page',
           style: TextStyle(color: textColor),
         ),
         actions: <Widget>[
           IconButton(
-            icon: const Icon(Icons.check),
+            color: textColor,
+            icon: const Icon(LineIcons.check),
             onPressed: () async {
               await crop();
               Future.delayed(const Duration(milliseconds: 100), () {
@@ -88,6 +89,15 @@ class _PreviewPageState extends State<PreviewPage> {
             },
           ),
         ],
+        leading: // Ensure Scaffold is in context
+            IconButton(
+                icon: const Icon(
+                  LineIcons.angleLeft,
+                  color: textColor,
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                }),
       ),
       body: Container(
         height: double.infinity,
@@ -213,25 +223,5 @@ class _PreviewPageState extends State<PreviewPage> {
 
   void rotate(bool right) {
     editorKey.currentState?.rotate(right: right);
-  }
-
-  void showPreviewDialog(Uint8List image) {
-    showDialog<void>(
-      context: context,
-      builder: (BuildContext ctx) => GestureDetector(
-        onTap: () => Navigator.pop(context),
-        child: Container(
-          color: Colors.grey.withOpacity(0.5),
-          child: Center(
-            child: SizedBox.fromSize(
-              size: const Size.square(200),
-              child: Container(
-                child: Image.memory(image),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
   }
 }

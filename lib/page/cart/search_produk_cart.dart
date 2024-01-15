@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:pos_app/bloc/cart_bloc.dart';
 import 'package:pos_app/constant.dart';
 
@@ -26,7 +27,7 @@ Widget searchProdukCart(BuildContext context) {
         ),
         focusColor: primaryColor,
         suffixIcon: const Icon(
-          Icons.search_rounded,
+          LineIcons.search,
           color: textColor,
         ),
         labelText: 'Cari',

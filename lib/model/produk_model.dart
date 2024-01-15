@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+
 import 'package:pos_app/database/produk_base.dart';
 import 'package:pos_app/db_helper.dart';
 
@@ -9,6 +10,7 @@ class Produk {
   int hargaJual;
   Uint8List image;
   int idKategori;
+  String namaKategori;
 
   Produk({
     required this.id,
@@ -17,22 +19,28 @@ class Produk {
     required this.hargaJual,
     required this.image,
     required this.idKategori,
+    required this.namaKategori,
   });
 
   factory Produk.fromJson(Map<String, dynamic> json) {
     return Produk(
-      id: json['id'],
-      nama: json['nama'],
-      hargaPokok: json['hargaPokok'],
-      hargaJual: json['hargaJual'],
-      image: json['image'],
-      idKategori: json['idKategori'],
-    );
+        id: json['id'],
+        nama: json['nama'],
+        hargaPokok: json['hargaPokok'],
+        hargaJual: json['hargaJual'],
+        image: json['image'],
+        idKategori: json['idKategori'],
+        namaKategori: json['namaKategori']);
   }
 
   static Future<List<Produk>> getData() async {
     DBHelper helper = DBHelper();
-    var resultObject = await helper.getData(ProdukQueri.tableName);
+    String sql =
+        'select produk.id, produk.nama, produk.hargaPokok, produk.idKategori, '
+        'produk.hargaJual, produk.image, kategori.nama as namaKategori from produk inner join kategori '
+        'on produk.idKategori = kategori.id';
+
+    var resultObject = await helper.rawData(sql);
     List<Produk> listProduk =
         resultObject.map((item) => Produk.fromJson(item)).toList();
     return listProduk;
@@ -40,7 +48,12 @@ class Produk {
 
   static Future<List<Produk>> getDataByKategori(int id) async {
     DBHelper helper = DBHelper();
-    var resultObject = await helper.getByKategori(ProdukQueri.tableName, id);
+    String sql =
+        'select produk.id, produk.nama, produk.hargaPokok, produk.idKategori, '
+        'produk.hargaJual, produk.image, kategori.nama as namaKategori from produk inner join kategori '
+        'on produk.idKategori = kategori.id where produk.idKategori =$id';
+
+    var resultObject = await helper.rawData(sql);
     List<Produk> listProduk =
         resultObject.map((item) => Produk.fromJson(item)).toList();
     return listProduk;
@@ -48,7 +61,11 @@ class Produk {
 
   static Future<List<Produk>> searchData(String nama) async {
     DBHelper helper = DBHelper();
-    var resultObject = await helper.searchLike(ProdukQueri.tableName, nama);
+    String sql =
+        'select produk.id, produk.nama, produk.hargaPokok, produk.idKategori, '
+        'produk.hargaJual, produk.image, kategori.nama as namaKategori from produk inner join kategori '
+        'on produk.idKategori = kategori.id where produk.nama like \'%$nama%\'';
+    var resultObject = await helper.rawData(sql);
     List<Produk> listProduk =
         resultObject.map((item) => Produk.fromJson(item)).toList();
     return listProduk;
