@@ -96,288 +96,222 @@ class _EditRecipeState extends State<EditRecipe> {
     );
   }
 
-  Container buildRecipe() {
-    return Container(
-      padding: const EdgeInsets.all(defaultPadding),
-      decoration: const BoxDecoration(
-          color: secondaryColor,
-          borderRadius: BorderRadius.all(Radius.circular(defaultRadius))),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        const SizedBox(
-          height: defaultPadding,
-        ),
-        const Text(
-          'Daftar Recipe',
-          style: TextStyle(
-              fontSize: 16, fontWeight: FontWeight.bold, color: textColor),
-        ),
-        const SizedBox(
-          height: defaultPadding,
-        ),
-        const Divider(
-          color: primaryColor,
-        ),
-        const SizedBox(
-          height: defaultPadding,
-        ),
-        Expanded(
-          child:
-              BlocBuilder<RecipeBloc, RecipeState>(builder: (context, state) {
-            if (state is RecipeLoading) {
+  Column buildRecipe() {
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      const SizedBox(
+        height: defaultPadding,
+      ),
+      const Text(
+        'Recipe :',
+        style: TextStyle(
+            fontSize: 16, fontWeight: FontWeight.bold, color: textColor),
+      ),
+      const SizedBox(
+        height: contentPadding,
+      ),
+      const Divider(
+        color: primaryColor,
+      ),
+      const SizedBox(
+        height: contentPadding,
+      ),
+      Expanded(
+        child: BlocBuilder<RecipeBloc, RecipeState>(builder: (context, state) {
+          if (state is RecipeLoading) {
+            return Container(
+              padding: const EdgeInsets.all(defaultPadding),
+              child: const Center(
+                  child: CircularProgressIndicator(
+                backgroundColor: primaryColor,
+              )),
+            );
+          } else {
+            RecipeLoaded recipeLoaded = state as RecipeLoaded;
+            if (recipeLoaded.data.isNotEmpty) {
+              return ListView.separated(
+                padding: EdgeInsets.zero,
+                itemCount: recipeLoaded.data.length,
+                separatorBuilder: (context, index) {
+                  return const Divider(
+                    color: primaryColor,
+                  );
+                },
+                itemBuilder: (BuildContext context, int index) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text('Notifikasi'),
+                                content:
+                                    const Text('Yakin Akan Menghapus Data ?'),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text('Tidak')),
+                                  TextButton(
+                                      onPressed: () {
+                                        RecipeBloc recipeBloc =
+                                            BlocProvider.of<RecipeBloc>(
+                                                context);
+                                        recipeBloc.add(HapusRecipe(
+                                            id: recipeLoaded.data[index].id,
+                                            idProduk: widget.idProduk));
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text('Ya'))
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        child: const Icon(LineIcons.times),
+                      ),
+                      const SizedBox(
+                        width: defaultPadding,
+                      ),
+                      Text(
+                        recipeLoaded.data[index].nama,
+                        style: const TextStyle(color: textColor),
+                      ),
+                      const Spacer(),
+                      Text(
+                        recipeLoaded.data[index].usage.toString(),
+                        style: const TextStyle(color: textColor),
+                      ),
+                      const SizedBox(
+                        width: defaultPadding,
+                      ),
+                      Text(
+                        recipeLoaded.data[index].satuan,
+                        style: const TextStyle(color: textColor),
+                      ),
+                    ],
+                  );
+                },
+              );
+            } else {
               return Container(
                 padding: const EdgeInsets.all(defaultPadding),
                 child: const Center(
-                    child: CircularProgressIndicator(
-                  backgroundColor: primaryColor,
-                )),
-              );
-            } else {
-              RecipeLoaded recipeLoaded = state as RecipeLoaded;
-              if (recipeLoaded.data.isNotEmpty) {
-                return ListView.separated(
-                  itemCount: recipeLoaded.data.length,
-                  separatorBuilder: (context, index) {
-                    return const Divider(
-                      color: primaryColor,
-                    );
-                  },
-                  itemBuilder: (BuildContext context, int index) {
-                    return Row(
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: const Text('Notifikasi'),
-                                  content:
-                                      const Text('Yakin Akan Menghapus Data ?'),
-                                  actions: [
-                                    TextButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: const Text('Tidak')),
-                                    TextButton(
-                                        onPressed: () {
-                                          RecipeBloc recipeBloc =
-                                              BlocProvider.of<RecipeBloc>(
-                                                  context);
-                                          recipeBloc.add(HapusRecipe(
-                                              id: recipeLoaded.data[index].id,
-                                              idProduk: widget.idProduk));
-                                          Navigator.pop(context);
-                                        },
-                                        child: const Text('Ya'))
-                                  ],
-                                );
-                              },
-                            );
-                          },
-                          icon: const Icon(Icons.close_rounded),
-                        ),
-                        const SizedBox(
-                          width: defaultPadding,
-                        ),
-                        Text(
-                          recipeLoaded.data[index].nama,
-                          style: const TextStyle(color: textColor),
-                        ),
-                        const Spacer(),
-                        Text(
-                          recipeLoaded.data[index].usage.toString(),
-                          style: const TextStyle(color: textColor),
-                        ),
-                        const SizedBox(
-                          width: defaultPadding,
-                        ),
-                        Text(
-                          recipeLoaded.data[index].satuan,
-                          style: const TextStyle(color: textColor),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              } else {
-                return Container(
-                  padding: const EdgeInsets.all(defaultPadding),
-                  child: const Center(
-                    child: Text(
-                      'Belum Ada Data',
-                      style: TextStyle(color: textColor),
-                    ),
+                  child: Text(
+                    'Belum Ada Data',
+                    style: TextStyle(color: textColor),
                   ),
-                );
-              }
+                ),
+              );
             }
-          }),
-        )
-      ]),
-    );
+          }
+        }),
+      )
+    ]);
   }
 
-  Column buildBahan() {
-    return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Row(
-            children: [
-              Text(
-                'Bahan Baku',
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: textColor),
-              ),
-              Spacer(),
-            ],
-          ),
-          const Divider(
-            color: primaryColor,
-          ),
-          const SizedBox(
-            height: contentPadding,
-          ),
-          const Text(
-            'Nama Bahan Baku',
-            style: TextStyle(color: textColor),
-          ),
-          const SizedBox(
-            height: defaultPadding,
-          ),
-          Material(
-            color: secondaryColor,
-            child: InkWell(
-              splashColor: textColor,
-              onTap: () {
-                bawah.showMaterialModalBottomSheet(
-                  expand: false,
-                  context: context,
-                  backgroundColor: Colors.transparent,
-                  builder: (context) {
-                    return buildAddBahan(context);
-                  },
-                );
-              },
-              child: Container(
-                padding: const EdgeInsets.all(defaultPadding),
-                decoration: BoxDecoration(
-                  border: Border.all(color: primaryColor),
-                  borderRadius:
-                      const BorderRadius.all(Radius.circular(defaultPadding)),
+  Row buildBahan() {
+    return Row(children: [
+      Expanded(
+        child: Material(
+          //color: secondaryColor,
+          child: InkWell(
+            splashColor: textColor,
+            onTap: () {
+              bawah.showMaterialModalBottomSheet(
+                expand: false,
+                context: context,
+                backgroundColor: Colors.transparent,
+                builder: (context) {
+                  return buildAddBahan(context);
+                },
+              );
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: contentPadding),
+              // decoration: const BoxDecoration(
+              //     border: Border(bottom: BorderSide(color: primaryColor))),
+              child: Row(children: [
+                const Icon(
+                  LineIcons.angleDown,
+                  color: primaryColor,
                 ),
-                child: Row(children: [
-                  idBahan == 0
-                      ? const Text(
-                          'Cari',
-                          style: TextStyle(color: textColor),
-                        )
-                      : Text(
-                          nama,
-                          style: const TextStyle(color: textColor),
-                        ),
-                  const Spacer(),
-                  const Icon(
-                    Icons.search_rounded,
-                    color: primaryColor,
-                  )
-                ]),
-              ),
+                const SizedBox(
+                  width: contentPadding,
+                ),
+                idBahan == 0
+                    ? const Text(
+                        'Cari Bahan Baku',
+                        style: TextStyle(color: textColor, fontSize: 20),
+                      )
+                    : Text(
+                        nama,
+                        style:
+                            const TextStyle(color: primaryColor, fontSize: 20),
+                      ),
+              ]),
             ),
           ),
-          const SizedBox(
-            height: defaultPadding,
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  focusNode: focusUsage,
-                  controller: usageController,
-                  cursorColor: primaryColor,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                      suffixText: satuan,
-                      label: const Text('Usage'),
-                      labelStyle: const TextStyle(color: primaryColor),
-                      contentPadding:
-                          const EdgeInsets.symmetric(vertical: contentPadding),
-                      isDense: true,
-                      enabledBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(width: 1, color: textColor),
-                      ),
-                      focusedBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(width: 1, color: primaryColor),
-                      )),
-                ),
+        ),
+      ),
+      SizedBox(
+        width: 70,
+        child: TextField(
+          focusNode: focusUsage,
+          controller: usageController,
+          cursorColor: primaryColor,
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(
+              suffixText: satuan,
+              prefixText: ':',
+              //label: const Text('Usage'),
+              labelStyle: const TextStyle(color: primaryColor),
+              contentPadding:
+                  const EdgeInsets.symmetric(vertical: contentPadding),
+              isDense: true,
+              enabledBorder: const UnderlineInputBorder(
+                borderSide: BorderSide(width: 1, color: textColor),
               ),
-              const SizedBox(
-                width: defaultPadding,
-              ),
-              ElevatedButton.icon(
-                  style:
-                      ElevatedButton.styleFrom(backgroundColor: primaryColor),
-                  onPressed: () {
-                    RecipeBloc recipeBloc =
-                        BlocProvider.of<RecipeBloc>(context);
-                    if (idBahan != 0) {
-                      if (usageController.text.isNotEmpty) {
-                        recipeBloc.add(TambahRecipe(
-                          idProduk: widget.idProduk,
-                          idBahan: idBahan,
-                          usage: double.parse(usageController.text),
-                        ));
-                        setState(() {
-                          idBahan = 0;
-                          nama = '';
-                          satuan = '';
-                        });
+              focusedBorder: const UnderlineInputBorder(
+                borderSide: BorderSide(width: 1, color: primaryColor),
+              )),
+        ),
+      ),
+      const SizedBox(
+        width: defaultPadding,
+      ),
+      IconButton(
+        style: ElevatedButton.styleFrom(backgroundColor: primaryColor),
+        onPressed: () {
+          RecipeBloc recipeBloc = BlocProvider.of<RecipeBloc>(context);
+          if (idBahan != 0) {
+            if (usageController.text.isNotEmpty) {
+              recipeBloc.add(TambahRecipe(
+                idProduk: widget.idProduk,
+                idBahan: idBahan,
+                usage: double.parse(usageController.text),
+              ));
+              setState(() {
+                idBahan = 0;
+                nama = '';
+                satuan = '';
+              });
 
-                        usageController.text = '';
-                        focusUsage.unfocus();
-                      } else {
-                        focusUsage.requestFocus();
-                      }
-                    }
+              usageController.text = '';
+              focusUsage.unfocus();
+            } else {
+              focusUsage.requestFocus();
+            }
+          }
 
-                    // Navigator.pop(context);
-                  },
-                  icon: const Icon(LineIcons.plus),
-                  label: const Text('Tambah')),
-              // Expanded(
-              //   child: Column(
-              //     crossAxisAlignment: CrossAxisAlignment.start,
-              //     children: [
-              //       const Text(
-              //         'Satuan',
-              //         style: TextStyle(color: textColor),
-              //       ),
-              //       Center(
-              //         child: Container(
-              //             width: double.infinity,
-              //             padding: const EdgeInsets.all(defaultPadding),
-              //             decoration: BoxDecoration(
-              //               border: Border.all(color: primaryColor),
-              //               borderRadius: const BorderRadius.all(
-              //                   Radius.circular(defaultPadding)),
-              //             ),
-              //             child: Text(
-              //               satuan,
-              //               style: const TextStyle(color: textColor),
-              //             )),
-              //       ),
-              //     ],
-              //   ),
-              // ),
-            ],
-          ),
-          const SizedBox(
-            height: defaultPadding,
-          ),
-        ]);
+          // Navigator.pop(context);
+        },
+        icon: const Icon(LineIcons.plus),
+      ),
+    ]);
   }
 
   Material buildAddBahan(BuildContext context) {
@@ -391,14 +325,8 @@ class _EditRecipeState extends State<EditRecipe> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Container(
-                  height: 50,
-                  // ignore: prefer_const_constructors
-                  padding: EdgeInsets.symmetric(horizontal: defaultPadding),
-                  decoration: const BoxDecoration(
-                      color: secondaryColor,
-                      borderRadius:
-                          BorderRadius.all(Radius.circular(defaultRadius))),
+                SizedBox(
+                  height: 60,
                   child: TextField(
                     onEditingComplete: () {
                       BahanBloc produk = BlocProvider.of<BahanBloc>(context);
@@ -410,267 +338,256 @@ class _EditRecipeState extends State<EditRecipe> {
                         produk.add(SearchBahan(nama: searchController.text));
                       }
                     },
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: contentPadding),
                         border: InputBorder.none,
-                        suffixIcon: const Icon(
+                        suffixIcon: Icon(
                           Icons.search_rounded,
                           color: backgroundcolor,
                         ),
-                        hintText: 'Search nama produk',
-                        hintStyle:
-                            TextStyle(color: textColor.withOpacity(0.5))),
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(width: 1, color: textColor),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(width: 1, color: primaryColor),
+                        ),
+                        labelText: 'Nama Bahan',
+                        labelStyle: TextStyle(color: primaryColor)),
                     controller: searchController,
                   ),
                 ),
                 const SizedBox(
                   height: defaultPadding,
                 ),
-                Container(
-                  //height: 50,
-                  // ignore: prefer_const_constructors
-                  padding: EdgeInsets.all(defaultPadding),
-                  decoration: const BoxDecoration(
-                      color: secondaryColor,
-                      borderRadius:
-                          BorderRadius.all(Radius.circular(defaultRadius))),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(
+                      height: contentPadding,
+                    ),
+                    const Text(
+                      'Tambah Bahan Baku',
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: textColor),
+                    ),
+                    const SizedBox(
+                      height: contentPadding,
+                    ),
+                    const Divider(
+                      color: primaryColor,
+                    ),
+                    Row(children: [
+                      Expanded(
+                        child: TextField(
+                          controller: namaController,
+                          cursorColor: primaryColor,
+                          focusNode: focusNama,
+                          textCapitalization: TextCapitalization.words,
+                          decoration: const InputDecoration(
+                            isDense: true,
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(width: 1, color: textColor),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(width: 1, color: primaryColor),
+                            ),
+                            label: Text('Nama Bahan'),
+                            labelStyle:
+                                TextStyle(fontSize: 14, color: textColor),
+                            focusColor: primaryColor,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: defaultPadding,
+                      ),
+                      Expanded(
+                        child: TextField(
+                          controller: satuanController,
+                          cursorColor: primaryColor,
+                          //textCapitalization: TextCapitalization.words,
+                          decoration: const InputDecoration(
+                            isDense: true,
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(width: 1, color: textColor),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(width: 1, color: primaryColor),
+                            ),
+                            label: Text('Satuan'),
+                            labelStyle:
+                                TextStyle(fontSize: 14, color: textColor),
+                            focusColor: primaryColor,
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                          onPressed: () {
+                            if (namaController.text.isNotEmpty &&
+                                satuanController.text.isNotEmpty) {
+                              BahanBloc bahan =
+                                  BlocProvider.of<BahanBloc>(context);
+                              bahan.add(TambahBahan(
+                                name: namaController.text,
+                                satuan: satuanController.text,
+                              ));
+                              satuanController.text = '';
+                              namaController.text = '';
+                              focusNama.requestFocus();
+                            }
+                          },
+                          icon: const Icon(Icons.save_rounded),
+                          iconSize: 40,
+                          color: primaryColor,
+                          style: IconButton.styleFrom(
+                              backgroundColor: primaryColor))
+                    ]),
+                  ],
+                ),
+                const SizedBox(
+                  height: defaultPadding,
+                ),
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       const SizedBox(
-                        height: defaultPadding,
+                        height: contentPadding,
                       ),
                       const Text(
-                        'Tambah Bahan Baku',
+                        'Daftar Bahan Baku',
                         style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                             color: textColor),
                       ),
                       const SizedBox(
-                        height: defaultPadding,
+                        height: contentPadding,
                       ),
                       const Divider(
                         color: primaryColor,
                       ),
-                      const SizedBox(
-                        height: defaultPadding,
-                      ),
-                      Row(children: [
-                        Expanded(
-                          child: TextField(
-                            controller: namaController,
-                            cursorColor: primaryColor,
-                            focusNode: focusNama,
-                            textCapitalization: TextCapitalization.words,
-                            decoration: const InputDecoration(
-                                isDense: true,
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(width: 1, color: primaryColor),
-                                ),
-                                label: Text('Nama Bahan'),
-                                labelStyle:
-                                    TextStyle(fontSize: 14, color: textColor),
-                                focusColor: primaryColor,
-                                enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 1, color: textColor))),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: defaultPadding,
-                        ),
-                        Expanded(
-                          child: TextField(
-                            controller: satuanController,
-                            cursorColor: primaryColor,
-                            //textCapitalization: TextCapitalization.words,
-                            decoration: const InputDecoration(
-                                isDense: true,
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(width: 1, color: primaryColor),
-                                ),
-                                label: Text('Satuan'),
-                                labelStyle:
-                                    TextStyle(fontSize: 14, color: textColor),
-                                focusColor: primaryColor,
-                                enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 1, color: textColor))),
-                          ),
-                        ),
-                        IconButton(
-                            onPressed: () {
-                              if (namaController.text.isNotEmpty &&
-                                  satuanController.text.isNotEmpty) {
-                                BahanBloc bahan =
-                                    BlocProvider.of<BahanBloc>(context);
-                                bahan.add(TambahBahan(
-                                  name: namaController.text,
-                                  satuan: satuanController.text,
-                                ));
-                                satuanController.text = '';
-                                namaController.text = '';
-                                focusNama.requestFocus();
-                              }
-                            },
-                            icon: const Icon(Icons.save_rounded),
-                            iconSize: 40,
-                            color: primaryColor,
-                            style: IconButton.styleFrom(
-                                backgroundColor: primaryColor))
-                      ]),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: defaultPadding,
-                ),
-                Expanded(
-                  child: Container(
-                    //height: 50,
-                    // ignore: prefer_const_constructors
-                    padding: EdgeInsets.all(defaultPadding),
-                    decoration: const BoxDecoration(
-                        color: secondaryColor,
-                        borderRadius:
-                            BorderRadius.all(Radius.circular(defaultRadius))),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        const SizedBox(
-                          height: defaultPadding,
-                        ),
-                        const Text(
-                          'Daftar Bahan Baku',
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: textColor),
-                        ),
-                        const SizedBox(
-                          height: defaultPadding,
-                        ),
-                        const Divider(
-                          color: primaryColor,
-                        ),
-                        BlocBuilder<BahanBloc, BahanState>(
-                            builder: (context, state) {
-                          if (state is BahanLoading) {
-                            return Container(
-                              padding: const EdgeInsets.all(defaultPadding),
-                              child: const Center(
-                                  child: CircularProgressIndicator(
-                                backgroundColor: primaryColor,
-                              )),
+                      BlocBuilder<BahanBloc, BahanState>(
+                          builder: (context, state) {
+                        if (state is BahanLoading) {
+                          return Container(
+                            padding: const EdgeInsets.all(defaultPadding),
+                            child: const Center(
+                                child: CircularProgressIndicator(
+                              backgroundColor: primaryColor,
+                            )),
+                          );
+                        } else {
+                          BahanLoaded bahanLoaded = state as BahanLoaded;
+                          if (bahanLoaded.data.isNotEmpty) {
+                            return Expanded(
+                              child: ListView.separated(
+                                shrinkWrap: true,
+                                padding: EdgeInsets.zero,
+                                itemCount: bahanLoaded.data.length,
+                                separatorBuilder: (context, index) {
+                                  return const Divider(
+                                    color: primaryColor,
+                                  );
+                                },
+                                itemBuilder: (BuildContext context, int index) {
+                                  return Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                title: const Text('Notifikasi'),
+                                                content: const Text(
+                                                    'Yakin Akan Menghapus Data ?'),
+                                                actions: [
+                                                  TextButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child:
+                                                          const Text('Tidak')),
+                                                  TextButton(
+                                                      onPressed: () {
+                                                        BahanBloc bahan =
+                                                            BlocProvider.of<
+                                                                    BahanBloc>(
+                                                                context);
+                                                        bahan.add(HapusBahan(
+                                                          id: bahanLoaded
+                                                              .data[index].id,
+                                                        ));
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: const Text('Ya'))
+                                                ],
+                                              );
+                                            },
+                                          );
+                                        },
+                                        child: const Icon(
+                                          LineIcons.times,
+                                          color: primaryColor,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: defaultPadding,
+                                      ),
+                                      Text(
+                                        '${bahanLoaded.data[index].nama} (${bahanLoaded.data[index].satuan})',
+                                        style:
+                                            const TextStyle(color: textColor),
+                                      ),
+                                      const Spacer(),
+                                      IconButton(
+                                        color: primaryColor,
+                                        onPressed: () {
+                                          setState(() {
+                                            idBahan =
+                                                bahanLoaded.data[index].id;
+                                            nama = bahanLoaded.data[index].nama;
+                                            satuan =
+                                                bahanLoaded.data[index].satuan;
+                                          });
+                                          focusUsage.requestFocus();
+                                          Navigator.pop(context);
+                                        },
+                                        icon: const Icon(LineIcons.plus),
+                                      )
+                                    ],
+                                  );
+                                },
+                              ),
                             );
                           } else {
-                            BahanLoaded bahanLoaded = state as BahanLoaded;
-                            if (bahanLoaded.data.isNotEmpty) {
-                              return Expanded(
-                                child: ListView.separated(
-                                  shrinkWrap: true,
-                                  padding: EdgeInsets.zero,
-                                  itemCount: bahanLoaded.data.length,
-                                  separatorBuilder: (context, index) {
-                                    return const Divider(
-                                      color: primaryColor,
-                                    );
-                                  },
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          '${bahanLoaded.data[index].nama} (${bahanLoaded.data[index].satuan})',
-                                          style:
-                                              const TextStyle(color: textColor),
-                                        ),
-                                        const Spacer(),
-                                        IconButton(
-                                          color: Colors.red,
-                                          onPressed: () {
-                                            showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return AlertDialog(
-                                                  title:
-                                                      const Text('Notifikasi'),
-                                                  content: const Text(
-                                                      'Yakin Akan Menghapus Data ?'),
-                                                  actions: [
-                                                    TextButton(
-                                                        onPressed: () {
-                                                          Navigator.pop(
-                                                              context);
-                                                        },
-                                                        child: const Text(
-                                                            'Tidak')),
-                                                    TextButton(
-                                                        onPressed: () {
-                                                          BahanBloc bahan =
-                                                              BlocProvider.of<
-                                                                      BahanBloc>(
-                                                                  context);
-                                                          bahan.add(HapusBahan(
-                                                            id: bahanLoaded
-                                                                .data[index].id,
-                                                          ));
-                                                          Navigator.pop(
-                                                              context);
-                                                        },
-                                                        child: const Text('Ya'))
-                                                  ],
-                                                );
-                                              },
-                                            );
-                                          },
-                                          icon: const Icon(Icons.close_rounded),
-                                        ),
-                                        IconButton(
-                                          color: primaryColor,
-                                          onPressed: () {
-                                            setState(() {
-                                              idBahan =
-                                                  bahanLoaded.data[index].id;
-                                              nama =
-                                                  bahanLoaded.data[index].nama;
-                                              satuan = bahanLoaded
-                                                  .data[index].satuan;
-                                            });
-                                            focusUsage.requestFocus();
-                                            Navigator.pop(context);
-                                          },
-                                          icon: const Icon(Icons.add),
-                                        )
-                                      ],
-                                    );
-                                  },
-                                ),
-                              );
-                            } else {
-                              return Expanded(
-                                child: Container(
-                                  padding: const EdgeInsets.all(defaultPadding),
-                                  child: const Center(
-                                    child: Text(
-                                      'Belum Ada Data',
-                                      style: TextStyle(color: textColor),
-                                    ),
+                            return Expanded(
+                              child: Container(
+                                padding: const EdgeInsets.all(defaultPadding),
+                                child: const Center(
+                                  child: Text(
+                                    'Belum Ada Data',
+                                    style: TextStyle(color: textColor),
                                   ),
                                 ),
-                              );
-                            }
+                              ),
+                            );
                           }
-                        }),
-                      ],
-                    ),
+                        }
+                      }),
+                    ],
                   ),
                 )
               ],

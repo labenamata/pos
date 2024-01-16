@@ -32,7 +32,7 @@ class _ProdukPageState extends State<ProdukPage> {
       drawer: menuDrawer(context),
       appBar: AppBar(
         backgroundColor: backgroundcolor,
-        elevation: 0,
+        elevation: 1,
         title: const Text(
           'Produk',
           style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
@@ -55,7 +55,7 @@ class _ProdukPageState extends State<ProdukPage> {
         child: Column(children: [
           searchProduk(context),
           const SizedBox(
-            height: contentPadding,
+            height: defaultPadding,
           ),
           const KategoriFilter(),
           const SizedBox(

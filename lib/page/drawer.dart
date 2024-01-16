@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:pos_app/bloc/cart_bloc.dart';
 import 'package:pos_app/constant.dart';
 import 'package:pos_app/page/cart/cart_page.dart';
@@ -8,41 +9,31 @@ import 'package:pos_app/page/produk/produk_page.dart';
 Widget menuDrawer(BuildContext context) {
   return Drawer(
     backgroundColor: backgroundcolor,
-    child: ListView(
-      shrinkWrap: true,
-      padding: EdgeInsets.zero,
+    child: Column(
       children: [
         const DrawerHeader(
           decoration: BoxDecoration(
             color: primaryColor,
           ),
-          child: Text(
-            'POS Application',
-            style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
+          child: SizedBox(
+            width: double.infinity,
+            child: Text(
+              'POS Application',
+              style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
+            ),
           ),
         ),
         //const Divider(),
-        const ListTile(
-          dense: true,
-          contentPadding: EdgeInsets.zero,
-          leading: Icon(
-            Icons.account_tree_rounded,
-          ),
-          title: Text(
-            'Kategori',
-            style: TextStyle(color: textColor, fontSize: 14),
-          ),
-        ),
-        const Divider(
-          color: primaryColor,
-        ),
+
         ListTile(
-          leading: const Icon(
-            Icons.apps_rounded,
+          trailing: const Icon(
+            LineIcons.listOl,
+            size: 35,
+            color: primaryColor,
           ),
           title: const Text(
             'Produk',
-            style: TextStyle(color: textColor, fontSize: 14),
+            style: TextStyle(color: textColor, fontSize: 20),
           ),
           onTap: () {
             Navigator.pop(context);
@@ -53,22 +44,18 @@ Widget menuDrawer(BuildContext context) {
             //Scaffold.of(context).closeEndDrawer();
           },
         ),
-        const ListTile(
-          leading: Icon(
-            Icons.abc,
-          ),
-          title: Text(
-            'Bahan Baku',
-            style: TextStyle(color: textColor, fontSize: 14),
-          ),
+        const Divider(
+          color: primaryColor,
         ),
         ListTile(
-          leading: const Icon(
-            Icons.shopping_bag_rounded,
+          trailing: const Icon(
+            LineIcons.shoppingBasket,
+            size: 35,
+            color: primaryColor,
           ),
           title: const Text(
             'Transaksi',
-            style: TextStyle(color: textColor, fontSize: 14),
+            style: TextStyle(color: textColor, fontSize: 20),
           ),
           onTap: () {
             CartBloc cart = BlocProvider.of<CartBloc>(context);
@@ -80,15 +67,36 @@ Widget menuDrawer(BuildContext context) {
             );
           },
         ),
+        const Divider(
+          color: primaryColor,
+        ),
         const ListTile(
-          leading: Icon(
-            Icons.document_scanner_rounded,
+          trailing: Icon(
+            LineIcons.fileAlt,
+            size: 35,
+            color: primaryColor,
           ),
           title: Text(
             'Laporan',
-            style: TextStyle(color: textColor, fontSize: 14),
+            style: TextStyle(color: textColor, fontSize: 20),
           ),
         ),
+        const Spacer(),
+        Padding(
+          padding: const EdgeInsets.all(defaultPadding),
+          child: Container(
+            height: 60,
+            decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(defaultRadius)),
+                color: primaryColor),
+            child: const Center(
+              child: Text(
+                'Log Out',
+                style: TextStyle(color: textColorInvert, fontSize: 16),
+              ),
+            ),
+          ),
+        )
       ],
     ),
   );
