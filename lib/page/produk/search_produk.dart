@@ -18,11 +18,11 @@ Widget searchProduk(BuildContext context) {
       }
     },
     decoration: InputDecoration(
-        //contentPadding: const EdgeInsets.symmetric(horizontal: defaultPadding),
-        focusedBorder: const UnderlineInputBorder(
+        contentPadding: const EdgeInsets.symmetric(horizontal: defaultPadding),
+        focusedBorder: const OutlineInputBorder(
           borderSide: BorderSide(width: 1, color: primaryColor),
         ),
-        enabledBorder: const UnderlineInputBorder(
+        enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(width: 1, color: textColor),
         ),
         focusColor: primaryColor,

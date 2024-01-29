@@ -8,6 +8,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as bawah;
 import 'package:pos_app/bloc/kategori_bloc.dart';
 import 'package:pos_app/bloc/produk_bloc.dart';
 import 'package:pos_app/constant.dart';
+import 'package:pos_app/model/kategori_model.dart';
 import 'package:pos_app/page/produk/produk_page.dart';
 import 'package:pos_app/widget/preview_page.dart';
 import 'package:image/image.dart' as IMG;
@@ -42,115 +43,110 @@ class _ProdukTambahState extends State<ProdukTambah> {
   @override
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
+    return Scaffold(
+      backgroundColor: backgroundcolor,
+      appBar: AppBar(
+        scrolledUnderElevation: 0,
         backgroundColor: backgroundcolor,
-        appBar: AppBar(
-          backgroundColor: backgroundcolor,
-          elevation: 1,
-          title: const Text(
-            'Tambah Produk',
-            style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
-          ),
-          leading: // Ensure Scaffold is in context
-              IconButton(
-                  icon: const Icon(
-                    LineIcons.angleLeft,
-                    color: textColor,
+        title: const Text(
+          'Tambah Produk',
+          style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
+        ),
+        leading: // Ensure Scaffold is in context
+            IconButton(
+                icon: const Icon(
+                  LineIcons.angleLeft,
+                  color: textColor,
+                ),
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ProdukPage()),
+                  );
+                }),
+      ),
+      bottomNavigationBar: buildBottom(context),
+      body: Container(
+        padding: const EdgeInsets.all(defaultPadding),
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            //mainAxisSize: MainAxisSize.min,
+            children: [
+              buildFoto(),
+              const SizedBox(
+                height: defaultPadding,
+              ),
+              buildKategori(),
+              const SizedBox(
+                height: defaultPadding,
+              ),
+              TextField(
+                controller: nameController,
+                cursorColor: primaryColor,
+                textCapitalization: TextCapitalization.words,
+                decoration: const InputDecoration(
+                    contentPadding: EdgeInsets.zero,
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(width: 1, color: primaryColor),
+                    ),
+                    label: Text('Nama Produk *'),
+                    labelStyle: TextStyle(fontSize: 14, color: textColor),
+                    focusColor: primaryColor,
+                    enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(width: 1, color: textColor))),
+              ),
+              const SizedBox(
+                height: defaultPadding,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: pokokController,
+                      cursorColor: primaryColor,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.zero,
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide:
+                                BorderSide(width: 1, color: primaryColor),
+                          ),
+                          label: Text('Harga Pokok *'),
+                          labelStyle: TextStyle(fontSize: 14, color: textColor),
+                          focusColor: primaryColor,
+                          enabledBorder: UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(width: 1, color: textColor))),
+                    ),
                   ),
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const ProdukPage()),
-                    );
-                  }),
-        ),
-        bottomNavigationBar: buildBottom(context),
-        body: Container(
-          padding: const EdgeInsets.all(defaultPadding),
-          child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              //mainAxisSize: MainAxisSize.min,
-              children: [
-                buildFoto(),
-                const SizedBox(
-                  height: defaultPadding,
-                ),
-                buildKategori(),
-                const SizedBox(
-                  height: defaultPadding,
-                ),
-                TextField(
-                  controller: nameController,
-                  cursorColor: primaryColor,
-                  textCapitalization: TextCapitalization.words,
-                  decoration: const InputDecoration(
-                      contentPadding: EdgeInsets.zero,
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(width: 1, color: primaryColor),
-                      ),
-                      label: Text('Nama Produk *'),
-                      labelStyle: TextStyle(fontSize: 14, color: textColor),
-                      focusColor: primaryColor,
-                      enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(width: 1, color: textColor))),
-                ),
-                const SizedBox(
-                  height: defaultPadding,
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: pokokController,
-                        cursorColor: primaryColor,
-                        keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.zero,
-                            focusedBorder: UnderlineInputBorder(
+                  const SizedBox(
+                    width: defaultPadding,
+                  ),
+                  Expanded(
+                    child: TextField(
+                      controller: jualController,
+                      cursorColor: primaryColor,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.zero,
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide:
+                                BorderSide(width: 1, color: primaryColor),
+                          ),
+                          label: Text('Harga Jual *'),
+                          labelStyle: TextStyle(fontSize: 14, color: textColor),
+                          focusColor: primaryColor,
+                          enabledBorder: UnderlineInputBorder(
                               borderSide:
-                                  BorderSide(width: 1, color: primaryColor),
-                            ),
-                            label: Text('Harga Pokok *'),
-                            labelStyle:
-                                TextStyle(fontSize: 14, color: textColor),
-                            focusColor: primaryColor,
-                            enabledBorder: UnderlineInputBorder(
-                                borderSide:
-                                    BorderSide(width: 1, color: textColor))),
-                      ),
+                                  BorderSide(width: 1, color: textColor))),
                     ),
-                    const SizedBox(
-                      width: defaultPadding,
-                    ),
-                    Expanded(
-                      child: TextField(
-                        controller: jualController,
-                        cursorColor: primaryColor,
-                        keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.zero,
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(width: 1, color: primaryColor),
-                            ),
-                            label: Text('Harga Jual *'),
-                            labelStyle:
-                                TextStyle(fontSize: 14, color: textColor),
-                            focusColor: primaryColor,
-                            enabledBorder: UnderlineInputBorder(
-                                borderSide:
-                                    BorderSide(width: 1, color: textColor))),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: defaultPadding,
-                ),
-              ]),
-        ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: defaultPadding,
+              ),
+            ]),
       ),
     );
   }
@@ -162,68 +158,45 @@ class _ProdukTambahState extends State<ProdukTambah> {
       child: Row(
         children: [
           Expanded(
-            child: Material(
-                borderRadius:
-                    const BorderRadius.all(Radius.circular(defaultRadius)),
-                child: InkWell(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: primaryColor),
-                      borderRadius: const BorderRadius.all(
-                          Radius.circular(defaultRadius)),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'Batal',
-                        style: TextStyle(color: primaryColor, fontSize: 16),
-                      ),
-                    ),
-                  ),
+            child: OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: primaryColor, width: 2)),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text(
+                  'Batal',
+                  style: TextStyle(color: textColor, fontSize: 14),
                 )),
           ),
           const SizedBox(
             width: defaultPadding,
           ),
           Expanded(
-            child: Material(
-                borderRadius:
-                    const BorderRadius.all(Radius.circular(defaultRadius)),
-                child: InkWell(
-                  onTap: () {
-                    ProdukBloc produk = BlocProvider.of<ProdukBloc>(context);
+            child: ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: primaryColor),
+                onPressed: () {
+                  ProdukBloc produk = BlocProvider.of<ProdukBloc>(context);
 
-                    IMG.Image? img = IMG.decodeImage(gambar!);
-                    IMG.Image resized =
-                        IMG.copyResize(img!, width: 200, height: 200);
-                    resizedImg = Uint8List.fromList(IMG.encodePng(resized));
-                    if (nameController.text.isNotEmpty &&
-                        pokokController.text.isNotEmpty &&
-                        jualController.text.isNotEmpty) {
-                      produk.add(TambahProduk(
-                          nama: nameController.text,
-                          hargaPokok: int.parse(pokokController.text),
-                          hargaJual: int.parse(jualController.text),
-                          idKategori: initKategori['idKategori'],
-                          img: resizedImg!));
-                      Navigator.pop(context);
-                    }
-                  },
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: primaryColor,
-                      borderRadius:
-                          BorderRadius.all(Radius.circular(defaultRadius)),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'Save',
-                        style: TextStyle(color: textColorInvert, fontSize: 16),
-                      ),
-                    ),
-                  ),
+                  IMG.Image? img = IMG.decodeImage(gambar!);
+                  IMG.Image resized =
+                      IMG.copyResize(img!, width: 200, height: 200);
+                  resizedImg = Uint8List.fromList(IMG.encodePng(resized));
+                  if (nameController.text.isNotEmpty &&
+                      pokokController.text.isNotEmpty &&
+                      jualController.text.isNotEmpty) {
+                    produk.add(TambahProduk(
+                        nama: nameController.text,
+                        hargaPokok: int.parse(pokokController.text),
+                        hargaJual: int.parse(jualController.text),
+                        idKategori: initKategori['idKategori'],
+                        img: resizedImg!));
+                    Navigator.pop(context);
+                  }
+                },
+                child: const Text(
+                  'Simpan',
+                  style: TextStyle(color: textColorInvert, fontSize: 14),
                 )),
           )
         ],
@@ -261,12 +234,18 @@ class _ProdukTambahState extends State<ProdukTambah> {
                             BorderRadius.all(Radius.circular(defaultRadius))),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Kategori',
-                          style: TextStyle(fontSize: 12),
+                        const Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Center(
+                            child: Text(
+                              'Kategori',
+                              style: TextStyle(fontSize: 16, color: textColor),
+                            ),
+                          ),
                         ),
-                        const Divider(),
+                        // const Divider(),
                         Row(
                           children: [
                             Expanded(
@@ -278,7 +257,7 @@ class _ProdukTambahState extends State<ProdukTambah> {
                                 decoration: const InputDecoration(
                                     contentPadding: EdgeInsets.zero,
                                     label: Text('Nama Kategori'),
-                                    labelStyle: TextStyle(color: primaryColor),
+                                    labelStyle: TextStyle(color: textColor),
                                     focusedBorder: UnderlineInputBorder(
                                         borderSide:
                                             BorderSide(color: primaryColor)),
@@ -290,8 +269,10 @@ class _ProdukTambahState extends State<ProdukTambah> {
                             const SizedBox(
                               width: contentPadding,
                             ),
-                            GestureDetector(
-                              onTap: () {
+                            IconButton(
+                              style: IconButton.styleFrom(
+                                  backgroundColor: primaryColor),
+                              onPressed: () {
                                 KategoriBloc kategori =
                                     BlocProvider.of<KategoriBloc>(context);
                                 kategori.add(TambahKategori(
@@ -299,128 +280,47 @@ class _ProdukTambahState extends State<ProdukTambah> {
                                 ));
                                 namaKategori.text = '';
                               },
-                              child: SizedBox(
-                                height: 30,
-                                width: 30,
-                                child: Container(
-                                  decoration: const BoxDecoration(
-                                      color: primaryColor,
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(defaultRadius))),
-                                  child: const Icon(
-                                    LineIcons.plus,
-                                    color: textColorInvert,
-                                  ),
-                                ),
-                              ),
+                              icon: const Icon(LineIcons.plus),
+                              color: textColorInvert,
                             )
                           ],
                         ),
                         const SizedBox(
                           height: defaultPadding,
                         ),
-                        Expanded(
-                          child: BlocBuilder<KategoriBloc, KategoriState>(
-                              builder: (context, state) {
-                            if (state is KategoriLoading) {
+                        BlocBuilder<KategoriBloc, KategoriState>(
+                            builder: (context, state) {
+                          if (state is KategoriLoading) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          } else {
+                            KategoriLoaded kategoriLoaded =
+                                state as KategoriLoaded;
+                            if (kategoriLoaded.data.isEmpty) {
                               return const Center(
-                                  child: CircularProgressIndicator());
+                                  child: Text('Belum ada Kategori'));
                             } else {
-                              KategoriLoaded kategoriLoaded =
-                                  state as KategoriLoaded;
-                              if (kategoriLoaded.data.isEmpty) {
-                                return const Center(
-                                    child: Text('Belum ada Kategori'));
-                              } else {
-                                if (idKategori == 0) {
-                                  idKategori = kategoriLoaded.data.first.id;
-                                }
-                                return ListView.builder(
-                                  shrinkWrap: true,
-                                  padding: EdgeInsets.zero,
-                                  itemCount: kategoriLoaded.data.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return Container(
-                                      padding: const EdgeInsets.only(
-                                          bottom: defaultPadding),
-                                      child: Row(
-                                        children: [
-                                          const Icon(
-                                            LineIcons.times,
-                                            color: primaryColor,
-                                          ),
-                                          const SizedBox(
-                                            width: defaultPadding,
-                                          ),
-                                          Expanded(
-                                            child: Material(
-                                              borderRadius:
-                                                  const BorderRadius.all(
-                                                      Radius.circular(
-                                                          defaultRadius)),
-                                              child: InkWell(
-                                                onTap: () {
-                                                  setState(() {
-                                                    initKategori = {
-                                                      'idKategori':
-                                                          kategoriLoaded
-                                                              .data[index].id,
-                                                      'nama': kategoriLoaded
-                                                          .data[index].nama
-                                                    };
-                                                  });
-
-                                                  Navigator.pop(context);
-                                                },
-                                                child: Container(
-                                                  padding: const EdgeInsets.all(
-                                                      contentPadding),
-                                                  decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          const BorderRadius
-                                                              .all(
-                                                              Radius.circular(
-                                                                  defaultRadius)),
-                                                      border: Border.all(
-                                                          color: primaryColor)),
-                                                  child: Row(
-                                                    children: [
-                                                      Text(kategoriLoaded
-                                                          .data[index].nama),
-                                                      const Spacer(),
-                                                      const Icon(
-                                                        LineIcons.angleRight,
-                                                        color: primaryColor,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                    // return Text(
-                                    //     kategoriLoaded.data[index].nama);
-                                    // return ListTile(
-                                    //   horizontalTitleGap: 0,
-                                    //   visualDensity: const VisualDensity(
-                                    //       horizontal: 0, vertical: -4),
-                                    //   leading: const Icon(LineIcons.dotCircle),
-                                    //   trailing:
-                                    //       const Icon(LineIcons.windowCloseAlt),
-                                    //   contentPadding: EdgeInsets.zero,
-                                    //   title:
-                                    //       Text(kategoriLoaded.data[index].nama),
-                                    // );
-                                  },
-                                );
+                              if (idKategori == 0) {
+                                idKategori = kategoriLoaded.data.first.id;
                               }
+                              return Wrap(
+                                spacing: 10, // gap between adjacent chips
+                                runSpacing: 10,
+                                alignment: WrapAlignment.start,
+                                children: kategoriLoaded.data.map((e) {
+                                  return tagChip(kategori: e);
+                                  // return Container(
+                                  //   padding: const EdgeInsets.all(5),
+                                  //   decoration: BoxDecoration(
+                                  //       border:
+                                  //           Border.all(color: primaryColor)),
+                                  //   child: Text(e.nama),
+                                  // );
+                                }).toList(),
+                              );
                             }
-                          }),
-                        ),
+                          }
+                        }),
                       ],
                     ),
                   );
@@ -440,6 +340,61 @@ class _ProdukTambahState extends State<ProdukTambah> {
         )
       ],
     );
+  }
+
+  Widget tagChip({
+    required Kategori kategori,
+    onTap,
+    action,
+  }) {
+    return InkWell(
+        onTap: () {
+          setState(() {
+            initKategori = {'idKategori': kategori.id, 'nama': kategori.nama};
+          });
+          Future.delayed(
+              const Duration(milliseconds: 500), () => Navigator.pop(context));
+        },
+        child: Stack(
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(
+                vertical: 5.0,
+                horizontal: 5.0,
+              ),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10.0,
+                  vertical: 10.0,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: primaryColor, width: 2),
+                  borderRadius: BorderRadius.circular(100.0),
+                ),
+                child: Text(
+                  kategori.nama,
+                  style: const TextStyle(
+                    color: textColor,
+                    fontSize: 15.0,
+                  ),
+                ),
+              ),
+            ),
+            const Positioned(
+              right: 0,
+              child: CircleAvatar(
+                backgroundColor: primaryColor,
+                radius: 8.0,
+                child: Icon(
+                  LineIcons.times,
+                  size: 10.0,
+                  color: Colors.white,
+                ),
+              ),
+            )
+          ],
+        ));
   }
 
   Column buildFoto() {

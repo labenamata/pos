@@ -17,24 +17,22 @@ Widget searchProdukCart(BuildContext context) {
         cart.add(GetCart());
       }
     },
-    decoration: InputDecoration(
-        contentPadding: const EdgeInsets.symmetric(horizontal: defaultPadding),
-        focusedBorder: const OutlineInputBorder(
-          borderSide: BorderSide(width: 1, color: primaryColor),
-        ),
-        enabledBorder: const OutlineInputBorder(
-          borderSide: BorderSide(width: 1, color: textColor),
-        ),
-        focusColor: primaryColor,
-        suffixIcon: const Icon(
-          LineIcons.search,
-          color: textColor,
-        ),
-        labelText: 'Cari',
-        labelStyle: const TextStyle(color: textColor),
-        //label: const Text('Cari'),
-        //hintText: 'Cari',
-        hintStyle: TextStyle(color: textColor.withOpacity(0.5))),
+    decoration: const InputDecoration(
+      contentPadding: EdgeInsets.symmetric(horizontal: defaultPadding),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(width: 1, color: primaryColor),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(width: 1, color: textColor),
+      ),
+      focusColor: primaryColor,
+      suffixIcon: Icon(
+        LineIcons.search,
+        color: primaryColor,
+      ),
+      labelText: 'Cari',
+      labelStyle: TextStyle(color: textColor),
+    ),
     controller: searchController,
   );
 }

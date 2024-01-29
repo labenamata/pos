@@ -32,7 +32,7 @@ class _ProdukPageState extends State<ProdukPage> {
       drawer: menuDrawer(context),
       appBar: AppBar(
         backgroundColor: backgroundcolor,
-        elevation: 1,
+        scrolledUnderElevation: 0,
         title: const Text(
           'Produk',
           style: TextStyle(color: textColor, fontWeight: FontWeight.bold),

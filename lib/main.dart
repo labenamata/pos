@@ -47,19 +47,15 @@ class MyApp extends StatelessWidget {
               create: (context) =>
                   KonfirmasiBloc(KonfirmasiLoading(''))..add(GetKonfirmasi())),
         ],
-        child: MaterialApp(
-          title: 'POS Application',
-          debugShowCheckedModeBanner: false,
-          theme: _buildTheme(Brightness.light),
-          home: const CartPage(),
+        child: SafeArea(
+          child: MaterialApp(
+            title: 'POS Application',
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+                useMaterial3: true,
+                fontFamily: GoogleFonts.poppins().fontFamily),
+            home: const CartPage(),
+          ),
         ));
   }
-}
-
-ThemeData _buildTheme(brightness) {
-  var baseTheme = ThemeData(brightness: brightness);
-
-  return baseTheme.copyWith(
-    textTheme: GoogleFonts.poppinsTextTheme(baseTheme.textTheme),
-  );
 }

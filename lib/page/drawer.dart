@@ -1,39 +1,42 @@
+import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:pos_app/bloc/cart_bloc.dart';
+import 'package:pos_app/bloc/transaksi_bloc.dart';
 import 'package:pos_app/constant.dart';
 import 'package:pos_app/page/cart/cart_page.dart';
 import 'package:pos_app/page/produk/produk_page.dart';
+import 'package:pos_app/page/report/laporan.dart';
 
+var faker = Faker();
 Widget menuDrawer(BuildContext context) {
   return Drawer(
     backgroundColor: backgroundcolor,
     child: Column(
       children: [
-        const DrawerHeader(
-          decoration: BoxDecoration(
-            color: primaryColor,
-          ),
-          child: SizedBox(
-            width: double.infinity,
-            child: Text(
-              'POS Application',
-              style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
+        UserAccountsDrawerHeader(
+            decoration: const BoxDecoration(color: primaryColor),
+            currentAccountPicture: CircleAvatar(
+                backgroundImage:
+                    NetworkImage(faker.image.image(keywords: ['person']))),
+            accountName: Text(
+              faker.address.person.name(),
+              style: const TextStyle(color: textColorInvert),
             ),
-          ),
-        ),
-        //const Divider(),
-
+            accountEmail: Text(
+              faker.internet.email(),
+              style: const TextStyle(color: textColorInvert),
+            )),
         ListTile(
-          trailing: const Icon(
+          leading: const Icon(
             LineIcons.listOl,
-            size: 35,
+            size: 30,
             color: primaryColor,
           ),
           title: const Text(
             'Produk',
-            style: TextStyle(color: textColor, fontSize: 20),
+            style: TextStyle(color: textColor, fontSize: 14),
           ),
           onTap: () {
             Navigator.pop(context);
@@ -44,18 +47,15 @@ Widget menuDrawer(BuildContext context) {
             //Scaffold.of(context).closeEndDrawer();
           },
         ),
-        const Divider(
-          color: primaryColor,
-        ),
         ListTile(
-          trailing: const Icon(
-            LineIcons.shoppingBasket,
-            size: 35,
+          leading: const Icon(
+            LineIcons.shoppingCart,
+            size: 30,
             color: primaryColor,
           ),
           title: const Text(
             'Transaksi',
-            style: TextStyle(color: textColor, fontSize: 20),
+            style: TextStyle(color: textColor, fontSize: 14),
           ),
           onTap: () {
             CartBloc cart = BlocProvider.of<CartBloc>(context);
@@ -67,34 +67,35 @@ Widget menuDrawer(BuildContext context) {
             );
           },
         ),
-        const Divider(
-          color: primaryColor,
-        ),
-        const ListTile(
-          trailing: Icon(
+        ListTile(
+          onTap: () {
+            TransaksiBloc transaksi = BlocProvider.of<TransaksiBloc>(context);
+            transaksi.add(GetTransaksi(status: 'finish'));
+            Navigator.pop(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const LaporanPage()),
+            );
+          },
+          leading: const Icon(
             LineIcons.fileAlt,
-            size: 35,
+            size: 30,
             color: primaryColor,
           ),
-          title: Text(
+          title: const Text(
             'Laporan',
-            style: TextStyle(color: textColor, fontSize: 20),
+            style: TextStyle(color: textColor, fontSize: 14),
           ),
         ),
         const Spacer(),
-        Padding(
-          padding: const EdgeInsets.all(defaultPadding),
-          child: Container(
-            height: 60,
-            decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(defaultRadius)),
-                color: primaryColor),
-            child: const Center(
-              child: Text(
-                'Log Out',
-                style: TextStyle(color: textColorInvert, fontSize: 16),
-              ),
-            ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              backgroundColor: primaryColor,
+              textStyle: const TextStyle(color: Colors.white)),
+          onPressed: () {},
+          child: const Text(
+            'Log Out',
+            style: TextStyle(color: textColorInvert, fontSize: 12),
           ),
         )
       ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:pos_app/bloc/cart_bloc.dart';
 import 'package:pos_app/bloc/konfirmasi_bloc.dart';
@@ -13,6 +14,48 @@ class Konfirmasi extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: backgroundcolor,
+      floatingActionButtonLocation: ExpandableFab.location,
+      floatingActionButton: ExpandableFab(
+        type: ExpandableFabType.up,
+        openButtonBuilder: RotateFloatingActionButtonBuilder(
+          child: const Text('Bayar'),
+          fabSize: ExpandableFabSize.regular,
+          foregroundColor: textColorInvert,
+          backgroundColor: primaryColor,
+          //shape: const CircleBorder(),
+        ),
+        closeButtonBuilder: FloatingActionButtonBuilder(
+          size: 56,
+          builder: (BuildContext context, void Function()? onPressed,
+              Animation<double> progress) {
+            return IconButton(
+              onPressed: onPressed,
+              icon: const Icon(
+                LineIcons.timesCircleAlt,
+                color: primaryColor,
+                size: 40,
+              ),
+            );
+          },
+        ),
+        children: [
+          navButton(
+              fungsi: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const BayarTunai()),
+                  ),
+              icon: LineIcons.moneyBill,
+              label: 'Tunai',
+              warna: Colors.green),
+          navButton(
+              icon: LineIcons.simCard,
+              label: 'Non Tunai',
+              warna: Colors.orange),
+          navButton(
+              icon: LineIcons.shoppingBag, label: 'Nanti', warna: primaryColor),
+        ],
+      ),
       appBar: AppBar(
         backgroundColor: backgroundcolor,
         elevation: 0,
@@ -100,33 +143,6 @@ class Konfirmasi extends StatelessWidget {
                       },
                     ),
                   ),
-                  const SizedBox(
-                    height: defaultPadding,
-                  ),
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        navButton(
-                            fungsi: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => BayarTunai(
-                                            totalTransaksi: konfirmasiLoaded
-                                                .data.totalTransaksi,
-                                          )),
-                                ),
-                            icon: LineIcons.moneyBill,
-                            label: 'Tunai',
-                            warna: Colors.green),
-                        navButton(
-                            icon: LineIcons.simCard,
-                            label: 'Non Tunai',
-                            warna: Colors.orange),
-                        navButton(
-                            icon: LineIcons.shoppingBag,
-                            label: 'Nanti',
-                            warna: primaryColor),
-                      ]),
                 ],
               );
             }
@@ -185,14 +201,13 @@ Widget produkTile(
           ),
           Row(
             children: [
-              ElevatedButton(
-                  style:
-                      ElevatedButton.styleFrom(backgroundColor: primaryColor),
+              IconButton(
+                  //style: IconButton.styleFrom(backgroundColor: primaryColor),
                   //constraints: BoxConstraints(maxHeight: 36),
-                  child: const Icon(
-                    LineIcons.minus,
-                    size: 20,
-                    color: textColorInvert,
+                  icon: const Icon(
+                    LineIcons.minusCircle,
+                    size: 30,
+                    color: primaryColor,
                   ),
                   onPressed: () {
                     int jml = detailData.jumlah - 1;
@@ -230,15 +245,15 @@ Widget produkTile(
                   ),
                 ),
               ),
-              ElevatedButton(
+              IconButton(
                   // splashRadius: 20,
                   // constraints: const BoxConstraints(maxHeight: 20),
-                  style:
-                      ElevatedButton.styleFrom(backgroundColor: primaryColor),
-                  child: const Icon(
-                    LineIcons.plus,
-                    color: textColorInvert,
-                    size: 20,
+                  // style:
+                  //     ElevatedButton.styleFrom(backgroundColor: primaryColor),
+                  icon: const Icon(
+                    LineIcons.plusCircle,
+                    color: primaryColor,
+                    size: 30,
                   ),
                   onPressed: () {
                     int jml = detailData.jumlah + 1;

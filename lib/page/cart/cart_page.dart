@@ -25,46 +25,45 @@ class _CartPageState extends State<CartPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
+    return Scaffold(
+      backgroundColor: backgroundcolor,
+      drawer: menuDrawer(context),
+      floatingActionButton: floatingConfirm(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      appBar: AppBar(
+        //elevation: 1,
+        scrolledUnderElevation: 0,
         backgroundColor: backgroundcolor,
-        drawer: menuDrawer(context),
-        floatingActionButton: floatingConfirm(),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        appBar: AppBar(
-          elevation: 1,
-          backgroundColor: backgroundcolor,
-          title: const Text(
-            'Transaksi Baru',
-            style: TextStyle(color: textColor),
+        title: const Text(
+          'Transaksi Baru',
+          style: TextStyle(color: textColor),
+        ),
+        leading:
+            // Ensure Scaffold is in context
+            Builder(builder: (context) {
+          return IconButton(
+              icon: const Icon(
+                LineIcons.bars,
+                color: textColor,
+              ),
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              });
+        }),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(defaultPadding),
+        child: Column(children: [
+          searchProdukCart(context),
+          const SizedBox(
+            height: defaultPadding,
           ),
-          leading:
-              // Ensure Scaffold is in context
-              Builder(builder: (context) {
-            return IconButton(
-                icon: const Icon(
-                  LineIcons.bars,
-                  color: textColor,
-                ),
-                onPressed: () {
-                  Scaffold.of(context).openDrawer();
-                });
-          }),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(defaultPadding),
-          child: Column(children: [
-            searchProdukCart(context),
-            const SizedBox(
-              height: defaultPadding,
-            ),
-            const KategoriCart(),
-            const SizedBox(
-              height: defaultPadding,
-            ),
-            const Expanded(child: CartList())
-          ]),
-        ),
+          const KategoriCart(),
+          const SizedBox(
+            height: defaultPadding,
+          ),
+          const Expanded(child: CartList())
+        ]),
       ),
     );
   }

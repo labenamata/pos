@@ -1,4 +1,3 @@
-import 'package:pos_app/database/cart_base.dart';
 import 'package:pos_app/database/detail_base.dart';
 import 'package:pos_app/database/produk_base.dart';
 import 'package:pos_app/database/transaksi_base.dart';
@@ -58,6 +57,7 @@ class Transaksi {
     DBHelper helper = DBHelper();
     List resultObject;
     List<Transaksi> listTransaksi = [];
+    //String sql = 'SELECT * FROM transaksi';
     String sql = 'SELECT * FROM transaksi where status = \'$status\'';
     if (tanggal != null && bulan != null && tahun != null) {
       sql =
@@ -70,12 +70,22 @@ class Transaksi {
     }
 
     resultObject = await helper.rawData(sql);
-    resultObject.map((item) async {
+
+    for (var item in resultObject) {
       String sql =
           'SELECT * FROM ${DetailQueri.tableName} WHERE idTransaksi = ${item['id']}';
       var cariTransaksi = await helper.rawData(sql);
-      Transaksi.fromJson(item, cariTransaksi);
-    });
+      listTransaksi.add(Transaksi.fromJson(item, cariTransaksi));
+    }
+    // resultObject.map((item) async {
+    //   String sql =
+    //       'SELECT * FROM ${DetailQueri.tableName} WHERE idTransaksi = ${item['id']}';
+    //   var cariTransaksi = await helper.rawData(sql);
+    //   if (kDebugMode) {
+    //     print('detail ${cariTransaksi.length}');
+    //   }
+    //   listTransaksi.add(Transaksi.fromJson(item, cariTransaksi));
+    // });
     // for (int i = 0; i <= resultObject.length; i++) {
     //   String sql =
     //       'SELECT * FROM ${DetailQueri.tableName} WHERE idTransaksi = ${resultObject[i]['id']}';

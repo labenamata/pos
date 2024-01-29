@@ -3,20 +3,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:pos_app/bloc/cart_bloc.dart';
+import 'package:pos_app/bloc/konfirmasi_bloc.dart';
 import 'package:pos_app/bloc/transaksi_bloc.dart';
 import 'package:pos_app/constant.dart';
 import 'package:pos_app/page/cart/cart_page.dart';
 
 class BayarTunai extends StatefulWidget {
-  final int totalTransaksi;
-
-  const BayarTunai({super.key, required this.totalTransaksi});
+  const BayarTunai({super.key});
 
   @override
   State<BayarTunai> createState() => _BayarTunaiState();
 }
 
 class _BayarTunaiState extends State<BayarTunai> {
+  int totalTransaksi = 0;
   int bayar = 0;
   int kembali = 0;
   bool isFinish = false;
@@ -46,23 +46,33 @@ class _BayarTunaiState extends State<BayarTunai> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            height: tinggi * 0.08,
-            padding: const EdgeInsets.all(defaultPadding),
-            decoration: const BoxDecoration(
-              color: primaryColor,
-            ),
-            child: Row(children: [
-              const Text(
-                'Total',
-                style: TextStyle(color: textColorInvert, fontSize: 16),
+              height: tinggi * 0.08,
+              padding: const EdgeInsets.all(defaultPadding),
+              decoration: const BoxDecoration(
+                color: primaryColor,
               ),
-              const Spacer(),
-              Text(
-                formatter.format(widget.totalTransaksi),
-                style: const TextStyle(color: textColorInvert, fontSize: 16),
-              )
-            ]),
-          ),
+              child: BlocBuilder<KonfirmasiBloc, KonfirmasiState>(
+                  builder: (context, state) {
+                if (state is KonfirmasiLoading) {
+                  return const Center(
+                    child: CircularProgressIndicator(color: primaryColor),
+                  );
+                }
+                KonfirmasiLoaded konfirmasiLoaded = state as KonfirmasiLoaded;
+                totalTransaksi = konfirmasiLoaded.data.totalTransaksi;
+                return Row(children: [
+                  const Text(
+                    'Total',
+                    style: TextStyle(color: textColorInvert, fontSize: 16),
+                  ),
+                  const Spacer(),
+                  Text(
+                    formatter.format(konfirmasiLoaded.data.totalTransaksi),
+                    style:
+                        const TextStyle(color: textColorInvert, fontSize: 16),
+                  )
+                ]);
+              })),
           Expanded(
             child: Container(
               height: tinggi * 0.22,
@@ -93,7 +103,7 @@ class _BayarTunaiState extends State<BayarTunai> {
                 child: InkWell(
                   onTap: () {
                     setState(() {
-                      bayar = widget.totalTransaksi;
+                      bayar = totalTransaksi;
                     });
                   },
                   child: Container(
@@ -122,7 +132,7 @@ class _BayarTunaiState extends State<BayarTunai> {
                 child: InkWell(
                   onTap: () {
                     DateTime now = DateTime.now();
-                    if (bayar < widget.totalTransaksi) {
+                    if (bayar < totalTransaksi) {
                       Fluttertoast.showToast(msg: 'Pembayaran Masih Kurang');
                     } else {
                       Map<String, dynamic> data = {
@@ -131,7 +141,7 @@ class _BayarTunaiState extends State<BayarTunai> {
                         'tahun': now.year,
                         'jam': '${now.hour}:${now.minute}',
                         'an': 'Tunai',
-                        'total': widget.totalTransaksi,
+                        'total': totalTransaksi,
                         'status': 'finish',
                         'pembayaran': 'tunai',
                         'bayar': bayar,
@@ -322,7 +332,7 @@ class _BayarTunaiState extends State<BayarTunai> {
               bottomRight: Radius.circular(right ?? 0)),
           child: InkWell(
             onTap: () {
-              int hitung = nominal - widget.totalTransaksi;
+              int hitung = nominal - totalTransaksi;
               setState(() {
                 bayar = nominal;
                 kembali = hitung < 0 ? 0 : hitung;
@@ -366,7 +376,7 @@ class _BayarTunaiState extends State<BayarTunai> {
   void input(String text) {
     String value = bayar.toString() + text;
     if (value.isNotEmpty) {
-      int hitung = int.parse(value) - widget.totalTransaksi;
+      int hitung = int.parse(value) - totalTransaksi;
       setState(() {
         bayar = int.parse(value);
         kembali = hitung < 0 ? 0 : hitung;
@@ -379,7 +389,7 @@ class _BayarTunaiState extends State<BayarTunai> {
     String byr = value.substring(0, value.length - 1);
     byr = byr.isEmpty ? '0' : byr;
     if (byr.isNotEmpty) {
-      int hitung = int.parse(byr) - widget.totalTransaksi;
+      int hitung = int.parse(byr) - totalTransaksi;
       setState(() {
         bayar = int.parse(byr);
         kembali = hitung < 0 ? 0 : hitung;

@@ -20,11 +20,26 @@ Widget listProduk() {
       ProdukLoaded produkLoaded = state as ProdukLoaded;
 
       if (produkLoaded.data.isNotEmpty) {
-        return ListView.builder(
-          itemCount: produkLoaded.data.length,
+        return GridView.builder(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              mainAxisSpacing: 10, crossAxisSpacing: 10, crossAxisCount: 2),
+          itemCount:
+              produkLoaded.data.length > 10 ? produkLoaded.data.length : 10,
           itemBuilder: (BuildContext context, int index) {
-            return produkTile(
-                detailData: produkLoaded.data[index], context: context);
+            if (index + 1 <= produkLoaded.data.length) {
+              return produkTile(
+                  detailData: produkLoaded.data[index], context: context);
+            } else {
+              return Container(
+                decoration: BoxDecoration(
+                    border: Border.all(color: primaryColor, width: 1),
+                    borderRadius:
+                        const BorderRadius.all(Radius.circular(defaultRadius))),
+              );
+            }
+
+            // return produkTile(
+            //     detailData: produkLoaded.data[index], context: context);
           },
         );
       } else {
@@ -61,44 +76,47 @@ Widget produkTile({required Produk detailData, required BuildContext context}) {
           );
         });
       },
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Card(
-            elevation: 5,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
+      child: Container(
+        decoration: BoxDecoration(
+            border: Border.all(color: primaryColor),
+            borderRadius:
+                const BorderRadius.all(Radius.circular(defaultRadius))),
+        child: Stack(
+          alignment: Alignment.bottomCenter,
+          // mainAxisAlignment: MainAxisAlignment.start,
+          // crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius:
+                  const BorderRadius.all(Radius.circular(defaultRadius)),
               child: Image.memory(
                 detailData.image,
-                height: 80.0,
-                width: 80.0,
               ),
             ),
-          ),
-          const SizedBox(
-            width: defaultPadding,
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                detailData.nama,
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            Container(
+              width: double.infinity,
+              decoration: BoxDecoration(color: Colors.white.withOpacity(0.6)),
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    detailData.nama,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 14),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    formatter.format(detailData.hargaJual),
+                    style: const TextStyle(fontSize: 14),
+                  ),
+                ],
               ),
-              const SizedBox(
-                height: defaultPadding,
-              ),
-              Text(
-                formatter.format(detailData.hargaJual),
-                style: const TextStyle(fontSize: 16),
-              ),
-            ],
-          ),
-          const Spacer(),
-        ],
+            ),
+          ],
+        ),
       ),
     ),
   );

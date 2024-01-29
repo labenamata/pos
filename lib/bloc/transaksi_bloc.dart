@@ -43,7 +43,7 @@ class TransaksiBloc extends Bloc<TransaksiEvent, TransaksiState> {
       GetTransaksi event, Emitter<TransaksiState> emit) async {
     List<Transaksi> transaksi;
     emit(TransaksiLoading());
-    transaksi = await Transaksi.getData(status: event.status);
+    transaksi = await Transaksi.getData(status: event.status, tahun: 2024);
     emit(TransaksiLoaded(transaksi));
   }
 

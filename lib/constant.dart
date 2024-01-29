@@ -6,8 +6,8 @@ import 'package:intl/intl.dart';
 // const Color secondaryColor = Color(0xFFEEE7DA);
 // const Color textColor = Color.fromARGB(255, 87, 84, 84);
 
-const Color backgroundcolor = Color.fromARGB(255, 255, 255, 255);
-const Color primaryColor = Color(0xFFBF3131);
+const Color backgroundcolor = Color(0xFFF4F5FA);
+const Color primaryColor = Color(0xFF6DA4AA);
 const Color secondaryColor = Color.fromARGB(255, 255, 252, 65);
 const Color textColor = Color.fromARGB(255, 87, 84, 84);
 const Color textColorInvert = Colors.white;
