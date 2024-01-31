@@ -52,6 +52,7 @@ class _ProdukTambahState extends State<ProdukTambah> {
           'Tambah Produk',
           style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
         ),
+        centerTitle: true,
         leading: // Ensure Scaffold is in context
             IconButton(
                 icon: const Icon(

@@ -38,6 +38,7 @@ class _CartPageState extends State<CartPage> {
           'Transaksi Baru',
           style: TextStyle(color: textColor),
         ),
+        centerTitle: true,
         leading:
             // Ensure Scaffold is in context
             Builder(builder: (context) {
@@ -53,7 +54,7 @@ class _CartPageState extends State<CartPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(defaultPadding),
-        child: Column(children: [
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           searchProdukCart(context),
           const SizedBox(
             height: defaultPadding,
@@ -75,7 +76,10 @@ Widget floatingConfirm() {
       CartLoaded cartLoaded = state;
       if (cartLoaded.data.totalTransaksi != 0) {
         return FloatingActionButton.extended(
-            icon: const Icon(LineIcons.check),
+            icon: const Icon(
+              LineIcons.check,
+              color: textColorInvert,
+            ),
             backgroundColor: primaryColor,
             label: Text(
               formatter.format(cartLoaded.data.totalTransaksi),

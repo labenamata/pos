@@ -31,10 +31,11 @@ Widget listProduk() {
                   detailData: produkLoaded.data[index], context: context);
             } else {
               return Container(
-                decoration: BoxDecoration(
-                    border: Border.all(color: primaryColor, width: 1),
+                decoration: const BoxDecoration(
+                    //border: Border.all(color: primaryColor, width: 1),
+                    color: Colors.white,
                     borderRadius:
-                        const BorderRadius.all(Radius.circular(defaultRadius))),
+                        BorderRadius.all(Radius.circular(defaultRadius))),
               );
             }
 
@@ -77,10 +78,8 @@ Widget produkTile({required Produk detailData, required BuildContext context}) {
         });
       },
       child: Container(
-        decoration: BoxDecoration(
-            border: Border.all(color: primaryColor),
-            borderRadius:
-                const BorderRadius.all(Radius.circular(defaultRadius))),
+        decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(defaultRadius))),
         child: Stack(
           alignment: Alignment.bottomCenter,
           // mainAxisAlignment: MainAxisAlignment.start,
@@ -95,7 +94,11 @@ Widget produkTile({required Produk detailData, required BuildContext context}) {
             ),
             Container(
               width: double.infinity,
-              decoration: BoxDecoration(color: Colors.white.withOpacity(0.6)),
+              decoration: BoxDecoration(
+                  color: primaryColor.withOpacity(0.9),
+                  borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(defaultRadius),
+                      bottomRight: Radius.circular(defaultRadius))),
               padding: const EdgeInsets.all(10),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -105,12 +108,15 @@ Widget produkTile({required Produk detailData, required BuildContext context}) {
                   Text(
                     detailData.nama,
                     style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 14),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                        color: textColorInvert),
                     overflow: TextOverflow.ellipsis,
                   ),
                   Text(
                     formatter.format(detailData.hargaJual),
-                    style: const TextStyle(fontSize: 14),
+                    style:
+                        const TextStyle(fontSize: 14, color: textColorInvert),
                   ),
                 ],
               ),

@@ -20,20 +20,28 @@ class CartList extends StatelessWidget {
         CartLoaded cartLoaded = state as CartLoaded;
 
         return GridView.builder(
-          // separatorBuilder: (context, index) {
-          //   return const Divider(
-          //     color: primaryColor,
-          //     thickness: 1,
-          //   );
-          // },
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2, mainAxisSpacing: 10, crossAxisSpacing: 10),
-          itemCount: cartLoaded.data.cart.length,
+              //childAspectRatio: 1 / 2,
+              crossAxisCount: 2,
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10),
+          itemCount: cartLoaded.data.cart.length > 10
+              ? cartLoaded.data.cart.length
+              : 10,
           itemBuilder: (BuildContext context, int index) {
-            return produkTile(
-                idx: index,
-                detailData: cartLoaded.data.cart[index],
-                context: context);
+            if (index + 1 <= cartLoaded.data.cart.length) {
+              return produkTile(
+                  idx: index,
+                  detailData: cartLoaded.data.cart[index],
+                  context: context);
+            } else {
+              return Container(
+                decoration: const BoxDecoration(
+                    color: textColorInvert,
+                    borderRadius:
+                        BorderRadius.all(Radius.circular(defaultRadius))),
+              );
+            }
           },
         );
       }
@@ -48,9 +56,9 @@ Widget produkTile(
     required ListCart detailData,
     required BuildContext context}) {
   return Container(
-    decoration: BoxDecoration(
-        border: Border.all(color: primaryColor),
-        borderRadius: const BorderRadius.all(Radius.circular(defaultRadius))),
+    decoration: const BoxDecoration(
+        //border: Border.all(color: primaryColor),
+        borderRadius: BorderRadius.all(Radius.circular(defaultRadius))),
     child: Stack(
       alignment: Alignment.bottomCenter,
       children: [
@@ -76,26 +84,38 @@ Widget produkTile(
             ),
           ),
         ),
-        Align(
-          alignment: Alignment.topRight,
-          child: SizedBox(
-            height: 50,
-            width: 50,
-            child: Container(
-              decoration: const BoxDecoration(
-                  color: primaryColor,
-                  borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(defaultRadius),
-                      topRight: Radius.circular(defaultRadius))),
-              child: Center(
-                child: Text(
-                  detailData.jumlah.toString(),
-                  style: const TextStyle(color: textColorInvert, fontSize: 18),
+        Builder(builder: (BuildContext context) {
+          if (detailData.jumlah > 0) {
+            return Align(
+              alignment: Alignment.topRight,
+              child: SizedBox(
+                height: 50,
+                width: 50,
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: primaryColor,
+                      border: Border.all(color: backgroundcolor, width: 2),
+                      borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(defaultRadius),
+                          topRight: Radius.circular(defaultRadius))),
+                  child: Center(
+                    child: Text(
+                      detailData.jumlah.toString(),
+                      style:
+                          const TextStyle(color: textColorInvert, fontSize: 18),
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-        ),
+            );
+          } else {
+            return const SizedBox(
+              height: 20,
+              width: 20,
+            );
+          }
+        }),
+
         GestureDetector(
           onTap: () {
             int jml = detailData.jumlah - 1;
@@ -112,61 +132,58 @@ Widget produkTile(
                 total: ttl,
                 idx: idx));
           },
-          child: Align(
-            alignment: Alignment.topLeft,
-            child: SizedBox(
-              height: 40,
-              width: 40,
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.red[200],
-                    borderRadius: const BorderRadius.only(
-                        bottomRight: Radius.circular(defaultRadius),
-                        topLeft: Radius.circular(defaultRadius))),
-                child: const Center(
-                    child: Icon(
-                  LineIcons.minus,
-                  color: textColorInvert,
-                )),
-              ),
-            ),
-          ),
-        ),
-        GestureDetector(
-          onTap: () {
-            int jml = detailData.jumlah + 1;
-            int ttl = jml * detailData.harga;
-
-            CartBloc cart = BlocProvider.of<CartBloc>(context);
-            cart.add(TambahCart(
-                status: 'plus',
-                idProduk: detailData.id,
-                harga: detailData.harga,
-                nama: detailData.nama,
-                jumlah: jml,
-                total: ttl,
-                idx: idx));
-          },
           child: Container(
             width: double.infinity,
-            decoration: BoxDecoration(color: Colors.white.withOpacity(0.6)),
+            decoration: BoxDecoration(
+                color: primaryColor.withOpacity(0.9),
+                borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(defaultRadius),
+                    bottomRight: Radius.circular(defaultRadius))),
             padding: const EdgeInsets.all(10),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Row(
               children: [
-                Text(
-                  detailData.nama,
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold),
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Text(
-                  formatter.format(detailData.harga),
-                  style: const TextStyle(
-                    fontSize: 12,
+                Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        detailData.nama,
+                        style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: textColorInvert),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        formatter.format(detailData.harga),
+                        style: const TextStyle(
+                            fontSize: 14, color: textColorInvert),
+                      ),
+                    ],
                   ),
                 ),
+                const SizedBox(
+                  width: 15,
+                ),
+                Builder(builder: (BuildContext context) {
+                  if (detailData.jumlah > 0) {
+                    return const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: Center(
+                          child: Icon(
+                        LineIcons.minusCircle,
+                        color: textColorInvert,
+                      )),
+                    );
+                  } else {
+                    return const SizedBox(
+                      height: 20,
+                      width: 20,
+                    );
+                  }
+                })
               ],
             ),
           ),

@@ -5,78 +5,54 @@ import 'package:pos_app/db_helper.dart';
 import 'package:pos_app/model/cart_model.dart';
 
 class Transaksi {
-  int id;
-  int tanggal;
-  int bulan;
-  int tahun;
-  String jam;
-  String an;
   int total;
-  String status;
-  String pembayaran;
-  int bayar;
-  int kembali;
-  List<DetailTransaksi> detailTransaksi;
+  List<ListTransaksi> transaksiList;
 
   Transaksi({
-    required this.id,
-    required this.tanggal,
-    required this.bulan,
-    required this.tahun,
-    required this.jam,
-    required this.an,
     required this.total,
-    required this.status,
-    required this.pembayaran,
-    required this.bayar,
-    required this.kembali,
-    required this.detailTransaksi,
+    required this.transaksiList,
   });
 
-  factory Transaksi.fromJson(Map<String, dynamic> json, List detail) {
-    //var jsonDetail = json['detail'] as List;
+  Transaksi copyWith({int? total, List<ListTransaksi>? transaksiList}) {
     return Transaksi(
-      id: json['id'],
-      tanggal: json['tanggal'],
-      bulan: json['bulan'],
-      tahun: json['tahun'],
-      jam: json['jam'],
-      an: json['an'],
-      total: json['total'],
-      status: json['status'],
-      pembayaran: json['pembayaran'],
-      bayar: json['bayar'],
-      kembali: json['kembali'],
-      detailTransaksi:
-          detail.map((item) => DetailTransaksi.fromJson(item)).toList(),
+      total: total ?? this.total,
+      transaksiList: transaksiList ?? this.transaksiList,
     );
   }
 
-  static Future<List<Transaksi>> getData(
+  static Future<Transaksi> getData(
       {int? tanggal, int? bulan, int? tahun, required String status}) async {
     DBHelper helper = DBHelper();
     List resultObject;
-    List<Transaksi> listTransaksi = [];
+    List<ListTransaksi> listTransaksi = [];
+    int total = 0;
     //String sql = 'SELECT * FROM transaksi';
-    String sql = 'SELECT * FROM transaksi where status = \'$status\'';
+    String sql = 'FROM transaksi where status = \'$status\'';
     if (tanggal != null && bulan != null && tahun != null) {
       sql =
-          'SELECT * FROM ${TransaksiQueri.tableName} WHERE tanggal = $tanggal and bulan = $bulan and tahun = $tahun and status = '
+          'FROM ${TransaksiQueri.tableName} WHERE tanggal = $tanggal and bulan = $bulan and tahun = $tahun and status = '
           '\'$status\'';
     } else if (tanggal == null && bulan != null && tahun != null) {
-      'SELECT * FROM ${TransaksiQueri.tableName} WHERE bulan = $bulan and tahun = $tahun and status = \'$status\'';
+      'FROM ${TransaksiQueri.tableName} WHERE bulan = $bulan and tahun = $tahun and status = \'$status\'';
     } else if (tanggal == null && bulan == null && tahun != null) {
-      'SELECT * FROM ${TransaksiQueri.tableName} WHERE tahun = $tahun and status = \'$status\'';
+      'FROM ${TransaksiQueri.tableName} WHERE tahun = $tahun and status = \'$status\'';
     }
 
-    resultObject = await helper.rawData(sql);
+    String sqlAll = 'SELECT * ';
+
+    String sqlSum = 'SELECT sum(total) as total ';
+
+    resultObject = await helper.rawData(sqlAll + sql);
+    var sumTransaksi = await helper.rawData(sqlSum + sql);
 
     for (var item in resultObject) {
       String sql =
           'SELECT * FROM ${DetailQueri.tableName} WHERE idTransaksi = ${item['id']}';
       var cariTransaksi = await helper.rawData(sql);
-      listTransaksi.add(Transaksi.fromJson(item, cariTransaksi));
+      listTransaksi.add(ListTransaksi.fromJson(item, cariTransaksi));
     }
+
+    total = sumTransaksi[0]['total'] ?? 0;
     // resultObject.map((item) async {
     //   String sql =
     //       'SELECT * FROM ${DetailQueri.tableName} WHERE idTransaksi = ${item['id']}';
@@ -104,7 +80,9 @@ class Transaksi {
     //       kembali: resultObject[i]['id']));
     // }
 
-    return listTransaksi;
+    Transaksi transaksi = Transaksi(transaksiList: listTransaksi, total: total);
+
+    return transaksi;
   }
 
   static addTransaksi(Map<String, dynamic> data) async {
@@ -163,6 +141,55 @@ class DetailTransaksi {
       harga: json['harga'],
       jumlah: json['jumlah'],
       total: json['total'],
+    );
+  }
+}
+
+class ListTransaksi {
+  int id;
+  int tanggal;
+  int bulan;
+  int tahun;
+  String jam;
+  String an;
+  int total;
+  String status;
+  String pembayaran;
+  int bayar;
+  int kembali;
+  List<DetailTransaksi> detailTransaksi;
+
+  ListTransaksi({
+    required this.id,
+    required this.tanggal,
+    required this.bulan,
+    required this.tahun,
+    required this.jam,
+    required this.an,
+    required this.total,
+    required this.status,
+    required this.pembayaran,
+    required this.bayar,
+    required this.kembali,
+    required this.detailTransaksi,
+  });
+
+  factory ListTransaksi.fromJson(Map<String, dynamic> json, List detail) {
+    //var jsonDetail = json['detail'] as List;
+    return ListTransaksi(
+      id: json['id'],
+      tanggal: json['tanggal'],
+      bulan: json['bulan'],
+      tahun: json['tahun'],
+      jam: json['jam'],
+      an: json['an'],
+      total: json['total'],
+      status: json['status'],
+      pembayaran: json['pembayaran'],
+      bayar: json['bayar'],
+      kembali: json['kembali'],
+      detailTransaksi:
+          detail.map((item) => DetailTransaksi.fromJson(item)).toList(),
     );
   }
 }

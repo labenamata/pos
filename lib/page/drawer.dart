@@ -69,8 +69,15 @@ Widget menuDrawer(BuildContext context) {
         ),
         ListTile(
           onTap: () {
+            int tanggal = DateTime.now().day;
+            int bulan = DateTime.now().month;
+            int tahun = DateTime.now().year;
             TransaksiBloc transaksi = BlocProvider.of<TransaksiBloc>(context);
-            transaksi.add(GetTransaksi(status: 'finish'));
+            transaksi.add(GetTransaksi(
+                status: 'finish',
+                tanggal: tanggal,
+                bulan: bulan,
+                tahun: tahun));
             Navigator.pop(context);
             Navigator.push(
               context,

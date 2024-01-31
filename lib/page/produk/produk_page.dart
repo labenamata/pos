@@ -37,6 +37,7 @@ class _ProdukPageState extends State<ProdukPage> {
           'Produk',
           style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
         ),
+        centerTitle: true,
         leading:
             // Ensure Scaffold is in context
             Builder(builder: (context) {
@@ -52,7 +53,7 @@ class _ProdukPageState extends State<ProdukPage> {
       ),
       body: Container(
         padding: const EdgeInsets.all(defaultPadding),
-        child: Column(children: [
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           searchProduk(context),
           const SizedBox(
             height: defaultPadding,
@@ -75,7 +76,8 @@ class _ProdukPageState extends State<ProdukPage> {
             );
           },
           child: const Icon(
-            Icons.add,
+            LineIcons.plus,
+            color: textColorInvert,
             //size: 50,
             //color: textColor,
           )),

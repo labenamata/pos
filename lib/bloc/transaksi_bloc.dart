@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:pos_app/model/transaksi_model.dart';
 
 class TransaksiEvent {}
@@ -9,8 +10,10 @@ class TransaksiEvent {}
 abstract class TransaksiState extends Equatable {}
 
 class TransaksiLoaded extends TransaksiState {
-  final List<Transaksi> data;
-  TransaksiLoaded(this.data);
+  final Transaksi data;
+  TransaksiLoaded(
+    this.data,
+  );
 
   @override
   List<Object?> get props => [data];
@@ -23,7 +26,15 @@ class TransaksiLoading extends TransaksiState {
 
 class GetTransaksi extends TransaksiEvent {
   String status;
-  GetTransaksi({required this.status});
+  int? tanggal;
+  int? bulan;
+  int? tahun;
+  GetTransaksi({
+    required this.status,
+    this.tanggal,
+    this.bulan,
+    this.tahun,
+  });
 }
 
 class SimpanTransaksi extends TransaksiEvent {
@@ -41,15 +52,19 @@ class TransaksiBloc extends Bloc<TransaksiEvent, TransaksiState> {
 
   Future<FutureOr<void>> _getTransaksi(
       GetTransaksi event, Emitter<TransaksiState> emit) async {
-    List<Transaksi> transaksi;
+    Transaksi transaksi;
     emit(TransaksiLoading());
-    transaksi = await Transaksi.getData(status: event.status, tahun: 2024);
+    transaksi = await Transaksi.getData(
+        status: event.status,
+        tahun: event.tahun,
+        bulan: event.bulan,
+        tanggal: event.tanggal);
     emit(TransaksiLoaded(transaksi));
   }
 
   Future<FutureOr<void>> _simpanTransaksi(
       SimpanTransaksi event, Emitter<TransaksiState> emit) async {
-    List<Transaksi> transaksi;
+    Transaksi transaksi;
     emit(TransaksiLoading());
     await Transaksi.addTransaksi(event.dataTransaksi);
     transaksi = await Transaksi.getData(status: 'finish');

@@ -31,6 +31,7 @@ dependencies:
   avatar_view: ^1.0.1
   camera: ^0.10.5+7
   cupertino_icons: ^1.0.2
+  easy_date_timeline: ^1.0.4
   equatable: ^2.0.5
   extended_image: ^8.1.0
   faker: ^2.1.0

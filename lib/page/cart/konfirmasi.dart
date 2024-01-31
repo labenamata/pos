@@ -6,6 +6,7 @@ import 'package:pos_app/bloc/cart_bloc.dart';
 import 'package:pos_app/bloc/konfirmasi_bloc.dart';
 import 'package:pos_app/constant.dart';
 import 'package:pos_app/model/cart_model.dart';
+import 'package:pos_app/page/cart/bayar_non.dart';
 import 'package:pos_app/page/cart/bayar_tunai.dart';
 
 class Konfirmasi extends StatelessWidget {
@@ -49,6 +50,10 @@ class Konfirmasi extends StatelessWidget {
               label: 'Tunai',
               warna: Colors.green),
           navButton(
+              fungsi: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const BayarNon()),
+                  ),
               icon: LineIcons.simCard,
               label: 'Non Tunai',
               warna: Colors.orange),
