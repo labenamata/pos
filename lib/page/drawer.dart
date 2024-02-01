@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:pos_app/bloc/cart_bloc.dart';
+import 'package:pos_app/bloc/login/login_bloc.dart';
 import 'package:pos_app/bloc/transaksi_bloc.dart';
 import 'package:pos_app/constant.dart';
 import 'package:pos_app/page/cart/cart_page.dart';
+import 'package:pos_app/page/login/login_page.dart';
 import 'package:pos_app/page/produk/produk_page.dart';
 import 'package:pos_app/page/report/laporan.dart';
 
@@ -15,19 +17,27 @@ Widget menuDrawer(BuildContext context) {
     backgroundColor: backgroundcolor,
     child: Column(
       children: [
-        UserAccountsDrawerHeader(
-            decoration: const BoxDecoration(color: primaryColor),
-            currentAccountPicture: CircleAvatar(
-                backgroundImage:
-                    NetworkImage(faker.image.image(keywords: ['person']))),
-            accountName: Text(
-              faker.address.person.name(),
-              style: const TextStyle(color: textColorInvert),
-            ),
-            accountEmail: Text(
-              faker.internet.email(),
-              style: const TextStyle(color: textColorInvert),
-            )),
+        BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
+          LoginState info = state as LoginState;
+
+          return UserAccountsDrawerHeader(
+              decoration: const BoxDecoration(color: primaryColor),
+              currentAccountPicture: const CircleAvatar(
+                child: Icon(
+                  LineIcons.user,
+                  color: textColorInvert,
+                  size: 50,
+                ),
+              ),
+              accountName: Text(
+                info.nama,
+                style: const TextStyle(color: textColorInvert),
+              ),
+              accountEmail: Text(
+                info.status,
+                style: const TextStyle(color: textColorInvert),
+              ));
+        }),
         ListTile(
           leading: const Icon(
             LineIcons.listOl,
@@ -95,11 +105,19 @@ Widget menuDrawer(BuildContext context) {
           ),
         ),
         const Spacer(),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
+        TextButton(
+          style: TextButton.styleFrom(
               backgroundColor: primaryColor,
               textStyle: const TextStyle(color: Colors.white)),
-          onPressed: () {},
+          onPressed: () {
+            context.read<LoginBloc>().add(Logout());
+            Future.delayed(const Duration(seconds: 2), () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginPage()),
+              );
+            });
+          },
           child: const Text(
             'Log Out',
             style: TextStyle(color: textColorInvert, fontSize: 12),

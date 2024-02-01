@@ -6,10 +6,12 @@ import 'package:pos_app/bloc/cart_bloc.dart';
 import 'package:pos_app/bloc/image_bloc.dart';
 import 'package:pos_app/bloc/kategori_bloc.dart';
 import 'package:pos_app/bloc/konfirmasi_bloc.dart';
+import 'package:pos_app/bloc/login/login_bloc.dart';
 import 'package:pos_app/bloc/produk_bloc.dart';
 import 'package:pos_app/bloc/recipe_bloc.dart';
 import 'package:pos_app/bloc/transaksi_bloc.dart';
 import 'package:pos_app/page/cart/cart_page.dart';
+import 'package:pos_app/page/login/login_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,6 +48,7 @@ class MyApp extends StatelessWidget {
           BlocProvider<KonfirmasiBloc>(
               create: (context) =>
                   KonfirmasiBloc(KonfirmasiLoading(''))..add(GetKonfirmasi())),
+          BlocProvider<LoginBloc>(create: (context) => LoginBloc()),
         ],
         child: SafeArea(
           child: MaterialApp(
@@ -54,7 +57,7 @@ class MyApp extends StatelessWidget {
             theme: ThemeData(
                 useMaterial3: true,
                 fontFamily: GoogleFonts.poppins().fontFamily),
-            home: const CartPage(),
+            home: const LoginPage(),
           ),
         ));
   }

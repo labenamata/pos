@@ -6,6 +6,7 @@ import 'package:pos_app/database/kategori_base.dart';
 import 'package:pos_app/database/produk_base.dart';
 import 'package:pos_app/database/recipe_base.dart';
 import 'package:pos_app/database/transaksi_base.dart';
+import 'package:pos_app/database/user_base.dart';
 import 'package:sqflite/sqflite.dart' as sqlite;
 import 'package:sqflite/sqlite_api.dart';
 import 'package:path/path.dart' as path;
@@ -28,7 +29,8 @@ class DBHelper {
     RecipeQueri.createTable,
     TransaksiQueri.createTable,
     CartQueri.createTable,
-    DetailQueri.createTable
+    DetailQueri.createTable,
+    UserQueri.createTable
   ]; // membuat daftar table yang akan dibuat
 
   Future<Database> openDB() async {
@@ -36,25 +38,25 @@ class DBHelper {
     return sqlite.openDatabase(path.join(dbPath, 'pos.db'),
         onCreate: (db, version) async {
       for (var tables in createTable) {
-        await db.execute(tables).then((value) {
-          if (kDebugMode) {
-            print("Berhasil ");
-          }
-        }).catchError((err) {
+        await db.execute(tables).then((value) {}).catchError((err) {
           if (kDebugMode) {
             print("errornya ${err.toString()}");
           }
         });
       }
-      // tables.forEach((table) async {
-      //   await db.execute(table).then((value) {
-      //     print("Berhasil ");
-      //   }).catchError((err) {
-      //     print("errornya ${err.toString()}");
-      //   });
-      // });
-      if (kDebugMode) {
-        print('Table Created');
+      Map<String, dynamic> data = {
+        'nama': 'Master Admin',
+        'username': 'admin',
+        'password': 'admin',
+        'status': 'admin',
+      };
+      var result =
+          await db.query('user', where: 'username = ?', whereArgs: ['admin']);
+      if (result.isEmpty) {
+        await db.insert(
+          'user',
+          data,
+        );
       }
     }, version: 1);
   }

@@ -22,6 +22,26 @@ class Produk {
     required this.namaKategori,
   });
 
+  Produk copyWith({
+    int? id,
+    String? nama,
+    int? hargaPokok,
+    int? hargaJual,
+    Uint8List? image,
+    int? idKategori,
+    String? namaKategori,
+  }) {
+    return Produk(
+      id: id ?? this.id,
+      nama: nama ?? this.nama,
+      hargaPokok: hargaPokok ?? this.hargaPokok,
+      hargaJual: hargaJual ?? this.hargaJual,
+      image: image ?? this.image,
+      idKategori: idKategori ?? this.idKategori,
+      namaKategori: namaKategori ?? this.namaKategori,
+    );
+  }
+
   factory Produk.fromJson(Map<String, dynamic> json) {
     return Produk(
         id: json['id'],
@@ -42,7 +62,7 @@ class Produk {
 
     var resultObject = await helper.rawData(sql);
     List<Produk> listProduk =
-        resultObject.map((item) => Produk.fromJson(item)).toList();
+        resultObject.map((item) => Produk.fromJson(item).copyWith()).toList();
     return listProduk;
   }
 
@@ -55,7 +75,7 @@ class Produk {
 
     var resultObject = await helper.rawData(sql);
     List<Produk> listProduk =
-        resultObject.map((item) => Produk.fromJson(item)).toList();
+        resultObject.map((item) => Produk.fromJson(item).copyWith()).toList();
     return listProduk;
   }
 

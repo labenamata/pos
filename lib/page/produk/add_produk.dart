@@ -39,6 +39,7 @@ class _ProdukTambahState extends State<ProdukTambah> {
   Uint8List? bytes;
 
   final picker = ImagePicker();
+  final kategoriForm = GlobalKey<FormState>();
 
   @override
   @override
@@ -247,44 +248,55 @@ class _ProdukTambahState extends State<ProdukTambah> {
                           ),
                         ),
                         // const Divider(),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: TextField(
-                                controller: namaKategori,
-                                textCapitalization:
-                                    TextCapitalization.sentences,
-                                cursorColor: primaryColor,
-                                decoration: const InputDecoration(
-                                    contentPadding: EdgeInsets.zero,
-                                    label: Text('Nama Kategori'),
-                                    labelStyle: TextStyle(color: textColor),
-                                    focusedBorder: UnderlineInputBorder(
-                                        borderSide:
-                                            BorderSide(color: primaryColor)),
-                                    enabledBorder: UnderlineInputBorder(
-                                        borderSide:
-                                            BorderSide(color: textColor))),
+                        Form(
+                          key: kategoriForm,
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextFormField(
+                                  controller: namaKategori,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Masukan Nama Kategori';
+                                    }
+                                    return null;
+                                  },
+                                  textCapitalization:
+                                      TextCapitalization.sentences,
+                                  cursorColor: primaryColor,
+                                  decoration: const InputDecoration(
+                                      contentPadding: EdgeInsets.zero,
+                                      label: Text('Nama Kategori'),
+                                      labelStyle: TextStyle(color: textColor),
+                                      focusedBorder: UnderlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: primaryColor)),
+                                      enabledBorder: UnderlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: textColor))),
+                                ),
                               ),
-                            ),
-                            const SizedBox(
-                              width: contentPadding,
-                            ),
-                            IconButton(
-                              style: IconButton.styleFrom(
-                                  backgroundColor: primaryColor),
-                              onPressed: () {
-                                KategoriBloc kategori =
-                                    BlocProvider.of<KategoriBloc>(context);
-                                kategori.add(TambahKategori(
-                                  name: namaKategori.text,
-                                ));
-                                namaKategori.text = '';
-                              },
-                              icon: const Icon(LineIcons.plus),
-                              color: textColorInvert,
-                            )
-                          ],
+                              const SizedBox(
+                                width: contentPadding,
+                              ),
+                              IconButton(
+                                style: IconButton.styleFrom(
+                                    backgroundColor: primaryColor),
+                                onPressed: () {
+                                  if (kategoriForm.currentState!.validate()) {
+                                    KategoriBloc kategori =
+                                        BlocProvider.of<KategoriBloc>(context);
+                                    kategori.add(TambahKategori(
+                                      name: namaKategori.text,
+                                    ));
+                                    namaKategori.text = '';
+                                  }
+                                },
+                                icon: const Icon(LineIcons.plus),
+                                color: textColorInvert,
+                              )
+                            ],
+                          ),
                         ),
                         const SizedBox(
                           height: defaultPadding,
