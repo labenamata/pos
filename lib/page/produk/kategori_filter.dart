@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pos_app/bloc/kategori_bloc.dart';
-import 'package:pos_app/bloc/produk_bloc.dart';
+import 'package:pos_app/bloc/kategori/kategori_bloc.dart';
+import 'package:pos_app/bloc/produk/produk_bloc.dart';
 import 'package:pos_app/constant.dart';
 
 class KategoriFilter extends StatefulWidget {

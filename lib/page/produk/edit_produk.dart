@@ -1,17 +1,19 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image/image.dart' as IMG;
+import 'package:image/image.dart' as pic;
 import 'package:image_picker/image_picker.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as bawah;
 import 'package:pos_app/bloc/image_bloc.dart';
-import 'package:pos_app/bloc/kategori_bloc.dart';
-import 'package:pos_app/bloc/produk_bloc.dart';
+import 'package:pos_app/bloc/kategori/kategori_bloc.dart';
+import 'package:pos_app/bloc/produk/produk_bloc.dart';
 import 'package:pos_app/bloc/recipe_bloc.dart';
 import 'package:pos_app/constant.dart';
+import 'package:pos_app/model/kategori_model.dart';
 import 'package:pos_app/model/produk_model.dart';
 import 'package:pos_app/page/produk/edit_recipe.dart';
+import 'package:pos_app/page/produk/komponen/form_produk.dart';
 import 'package:pos_app/page/produk/produk_page.dart';
 import 'package:pos_app/widget/preview_page.dart';
 
@@ -43,6 +45,8 @@ class _EditProdukState extends State<EditProduk> {
   Uint8List? bytes;
 
   final picker = ImagePicker();
+  final kategoriForm = GlobalKey<FormState>();
+  final produkForm = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -68,7 +72,6 @@ class _EditProdukState extends State<EditProduk> {
         backgroundColor: backgroundcolor,
         appBar: AppBar(
           backgroundColor: backgroundcolor,
-          elevation: 1,
           title: const Text(
             'Edit Produk',
             style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
@@ -147,70 +150,13 @@ class _EditProdukState extends State<EditProduk> {
                 const SizedBox(
                   height: defaultPadding,
                 ),
-                TextField(
-                  controller: nameController,
-                  cursorColor: primaryColor,
-                  textCapitalization: TextCapitalization.words,
-                  decoration: const InputDecoration(
-                      contentPadding: EdgeInsets.zero,
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(width: 1, color: primaryColor),
-                      ),
-                      label: Text('Nama Produk *'),
-                      labelStyle: TextStyle(fontSize: 14, color: textColor),
-                      focusColor: primaryColor,
-                      enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(width: 1, color: textColor))),
-                ),
+                FormProduk(
+                    formKey: produkForm,
+                    nameController: nameController,
+                    pokokController: pokokController,
+                    jualController: jualController),
                 const SizedBox(
                   height: defaultPadding,
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: pokokController,
-                        cursorColor: primaryColor,
-                        keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.zero,
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(width: 1, color: primaryColor),
-                            ),
-                            label: Text('Harga Pokok *'),
-                            labelStyle:
-                                TextStyle(fontSize: 14, color: textColor),
-                            focusColor: primaryColor,
-                            enabledBorder: UnderlineInputBorder(
-                                borderSide:
-                                    BorderSide(width: 1, color: textColor))),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: defaultPadding,
-                    ),
-                    Expanded(
-                      child: TextField(
-                        controller: jualController,
-                        cursorColor: primaryColor,
-                        keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.zero,
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(width: 1, color: primaryColor),
-                            ),
-                            label: Text('Harga Jual *'),
-                            labelStyle:
-                                TextStyle(fontSize: 14, color: textColor),
-                            focusColor: primaryColor,
-                            enabledBorder: UnderlineInputBorder(
-                                borderSide:
-                                    BorderSide(width: 1, color: textColor))),
-                      ),
-                    ),
-                  ],
                 ),
                 const SizedBox(
                   height: defaultPadding,
@@ -222,84 +168,63 @@ class _EditProdukState extends State<EditProduk> {
     );
   }
 
-  Container buildBottom(BuildContext context) {
+  Widget buildBottom(BuildContext context) {
     return Container(
       height: 90,
       padding: const EdgeInsets.all(defaultPadding),
       child: Row(
         children: [
           Expanded(
-            child: Material(
-                borderRadius:
-                    const BorderRadius.all(Radius.circular(defaultRadius)),
-                child: InkWell(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: primaryColor),
-                      borderRadius: const BorderRadius.all(
-                          Radius.circular(defaultRadius)),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'Batal',
-                        style: TextStyle(color: primaryColor, fontSize: 16),
-                      ),
-                    ),
-                  ),
-                )),
+            child: TextButton(
+              style: TextButton.styleFrom(
+                  side: const BorderSide(color: primaryColor, width: 2)),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text(
+                'Batal',
+                style: TextStyle(color: textColor, fontSize: 16),
+              ),
+            ),
           ),
           const SizedBox(
             width: defaultPadding,
           ),
           Expanded(
-            child: Material(
-                borderRadius:
-                    const BorderRadius.all(Radius.circular(defaultRadius)),
-                child: InkWell(
-                  onTap: () {
-                    ProdukBloc produk = BlocProvider.of<ProdukBloc>(context);
+            child: TextButton(
+              style: TextButton.styleFrom(backgroundColor: primaryColor),
+              onPressed: () {
+                ProdukBloc produk = BlocProvider.of<ProdukBloc>(context);
 
-                    IMG.Image? img = IMG.decodeImage(gambar!);
-                    IMG.Image resized =
-                        IMG.copyResize(img!, width: 200, height: 200);
-                    resizedImg = Uint8List.fromList(IMG.encodePng(resized));
-                    if (nameController.text.isNotEmpty &&
-                        pokokController.text.isNotEmpty &&
-                        jualController.text.isNotEmpty) {
-                      produk.add(UpdateProduk(
-                          id: widget.detailProduk.id,
-                          nama: nameController.text,
-                          hargaPokok: int.parse(pokokController.text),
-                          hargaJual: int.parse(jualController.text),
-                          idKategori: initKategori['idKategori'],
-                          img: resizedImg!));
-                      Navigator.pop(context);
-                    }
-                  },
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: primaryColor,
-                      borderRadius:
-                          BorderRadius.all(Radius.circular(defaultRadius)),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'Save',
-                        style: TextStyle(color: textColorInvert, fontSize: 16),
-                      ),
-                    ),
-                  ),
-                )),
+                pic.Image? img = pic.decodeImage(gambar!);
+                pic.Image resized =
+                    pic.copyResize(img!, width: 200, height: 200);
+                resizedImg = Uint8List.fromList(pic.encodePng(resized));
+                if (nameController.text.isNotEmpty &&
+                    pokokController.text.isNotEmpty &&
+                    jualController.text.isNotEmpty) {
+                  produk.add(UpdateProduk(
+                      id: widget.detailProduk.id,
+                      nama: nameController.text,
+                      hargaPokok: int.parse(pokokController.text),
+                      hargaJual: int.parse(jualController.text),
+                      idKategori: initKategori['idKategori'],
+                      img: resizedImg!));
+                  Navigator.pop(context);
+                }
+              },
+              child: const Text(
+                'Save',
+                style: TextStyle(color: textColorInvert, fontSize: 16),
+              ),
+            ),
           )
         ],
       ),
     );
   }
 
-  Column buildKategori() {
+  Widget buildKategori() {
     TextEditingController namaKategori = TextEditingController();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -329,166 +254,97 @@ class _EditProdukState extends State<EditProduk> {
                             BorderRadius.all(Radius.circular(defaultRadius))),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Kategori',
-                          style: TextStyle(fontSize: 12),
+                        const Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Center(
+                            child: Text(
+                              'Kategori',
+                              style: TextStyle(fontSize: 16, color: textColor),
+                            ),
+                          ),
                         ),
                         const Divider(),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: TextField(
-                                controller: namaKategori,
-                                textCapitalization:
-                                    TextCapitalization.sentences,
-                                cursorColor: primaryColor,
-                                decoration: const InputDecoration(
-                                    contentPadding: EdgeInsets.zero,
-                                    label: Text('Nama Kategori'),
-                                    labelStyle: TextStyle(color: primaryColor),
-                                    focusedBorder: UnderlineInputBorder(
-                                        borderSide:
-                                            BorderSide(color: primaryColor)),
-                                    enabledBorder: UnderlineInputBorder(
-                                        borderSide:
-                                            BorderSide(color: textColor))),
-                              ),
-                            ),
-                            const SizedBox(
-                              width: contentPadding,
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                KategoriBloc kategori =
-                                    BlocProvider.of<KategoriBloc>(context);
-                                kategori.add(TambahKategori(
-                                  name: namaKategori.text,
-                                ));
-                                namaKategori.text = '';
-                              },
-                              child: SizedBox(
-                                height: 30,
-                                width: 30,
-                                child: Container(
-                                  decoration: const BoxDecoration(
-                                      color: primaryColor,
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(defaultRadius))),
-                                  child: const Icon(
-                                    LineIcons.plus,
-                                    color: textColorInvert,
-                                  ),
+                        Form(
+                          key: kategoriForm,
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextFormField(
+                                  controller: namaKategori,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Masukan Nama Kategori';
+                                    }
+                                    return null;
+                                  },
+                                  textCapitalization:
+                                      TextCapitalization.sentences,
+                                  cursorColor: primaryColor,
+                                  decoration: const InputDecoration(
+                                      contentPadding: EdgeInsets.zero,
+                                      label: Text('Nama Kategori'),
+                                      labelStyle: TextStyle(color: textColor),
+                                      focusedBorder: UnderlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: primaryColor)),
+                                      enabledBorder: UnderlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: textColor))),
                                 ),
                               ),
-                            )
-                          ],
+                              const SizedBox(
+                                width: contentPadding,
+                              ),
+                              IconButton(
+                                style: IconButton.styleFrom(
+                                    backgroundColor: primaryColor),
+                                onPressed: () {
+                                  if (kategoriForm.currentState!.validate()) {
+                                    KategoriBloc kategori =
+                                        BlocProvider.of<KategoriBloc>(context);
+                                    kategori.add(TambahKategori(
+                                      name: namaKategori.text,
+                                    ));
+                                    namaKategori.text = '';
+                                  }
+                                },
+                                icon: const Icon(LineIcons.plus),
+                                color: textColorInvert,
+                              )
+                            ],
+                          ),
                         ),
                         const SizedBox(
                           height: defaultPadding,
                         ),
-                        Expanded(
-                          child: BlocBuilder<KategoriBloc, KategoriState>(
-                              builder: (context, state) {
-                            if (state is KategoriLoading) {
+                        BlocBuilder<KategoriBloc, KategoriState>(
+                            builder: (context, state) {
+                          if (state is KategoriLoading) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          } else {
+                            KategoriLoaded kategoriLoaded =
+                                state as KategoriLoaded;
+                            if (kategoriLoaded.data.isEmpty) {
                               return const Center(
-                                  child: CircularProgressIndicator());
+                                  child: Text('Belum ada Kategori'));
                             } else {
-                              KategoriLoaded kategoriLoaded =
-                                  state as KategoriLoaded;
-                              if (kategoriLoaded.data.isEmpty) {
-                                return const Center(
-                                    child: Text('Belum ada Kategori'));
-                              } else {
-                                if (idKategori == 0) {
-                                  idKategori = kategoriLoaded.data.first.id;
-                                }
-                                return ListView.builder(
-                                  shrinkWrap: true,
-                                  padding: EdgeInsets.zero,
-                                  itemCount: kategoriLoaded.data.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return Container(
-                                      padding: const EdgeInsets.only(
-                                          bottom: defaultPadding),
-                                      child: Row(
-                                        children: [
-                                          const Icon(
-                                            LineIcons.times,
-                                            color: primaryColor,
-                                          ),
-                                          const SizedBox(
-                                            width: defaultPadding,
-                                          ),
-                                          Expanded(
-                                            child: Material(
-                                              borderRadius:
-                                                  const BorderRadius.all(
-                                                      Radius.circular(
-                                                          defaultRadius)),
-                                              child: InkWell(
-                                                onTap: () {
-                                                  setState(() {
-                                                    initKategori = {
-                                                      'idKategori':
-                                                          kategoriLoaded
-                                                              .data[index].id,
-                                                      'nama': kategoriLoaded
-                                                          .data[index].nama
-                                                    };
-                                                  });
-
-                                                  Navigator.pop(context);
-                                                },
-                                                child: Container(
-                                                  padding: const EdgeInsets.all(
-                                                      contentPadding),
-                                                  decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          const BorderRadius
-                                                              .all(
-                                                              Radius.circular(
-                                                                  defaultRadius)),
-                                                      border: Border.all(
-                                                          color: primaryColor)),
-                                                  child: Row(
-                                                    children: [
-                                                      Text(kategoriLoaded
-                                                          .data[index].nama),
-                                                      const Spacer(),
-                                                      const Icon(
-                                                        LineIcons.angleRight,
-                                                        color: primaryColor,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                    // return Text(
-                                    //     kategoriLoaded.data[index].nama);
-                                    // return ListTile(
-                                    //   horizontalTitleGap: 0,
-                                    //   visualDensity: const VisualDensity(
-                                    //       horizontal: 0, vertical: -4),
-                                    //   leading: const Icon(LineIcons.dotCircle),
-                                    //   trailing:
-                                    //       const Icon(LineIcons.windowCloseAlt),
-                                    //   contentPadding: EdgeInsets.zero,
-                                    //   title:
-                                    //       Text(kategoriLoaded.data[index].nama),
-                                    // );
-                                  },
-                                );
+                              if (idKategori == 0) {
+                                idKategori = kategoriLoaded.data.first.id;
                               }
+                              return Wrap(
+                                spacing: 10, // gap between adjacent chips
+                                runSpacing: 10,
+                                alignment: WrapAlignment.start,
+                                children: kategoriLoaded.data.map((e) {
+                                  return tagChip(kategori: e);
+                                }).toList(),
+                              );
                             }
-                          }),
-                        ),
+                          }
+                        }),
                       ],
                     ),
                   );
@@ -510,7 +366,68 @@ class _EditProdukState extends State<EditProduk> {
     );
   }
 
-  Column buildFoto() {
+  Widget tagChip({
+    required Kategori kategori,
+    onTap,
+    action,
+  }) {
+    return InkWell(
+        onTap: () {
+          setState(() {
+            initKategori = {'idKategori': kategori.id, 'nama': kategori.nama};
+          });
+          Navigator.pop(context);
+        },
+        child: Stack(
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(
+                vertical: 5.0,
+                horizontal: 5.0,
+              ),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10.0,
+                  vertical: 10.0,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: primaryColor, width: 2),
+                  borderRadius: BorderRadius.circular(100.0),
+                ),
+                child: Text(
+                  kategori.nama,
+                  style: const TextStyle(
+                    color: textColor,
+                    fontSize: 15.0,
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              right: 0,
+              child: GestureDetector(
+                onTap: () {
+                  context
+                      .read<KategoriBloc>()
+                      .add(HapusKategori(id: kategori.id));
+                },
+                child: const CircleAvatar(
+                  backgroundColor: Colors.red,
+                  radius: 10.0,
+                  child: Icon(
+                    LineIcons.times,
+                    size: 10.0,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            )
+          ],
+        ));
+  }
+
+  Widget buildFoto() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -640,108 +557,111 @@ class _EditProdukState extends State<EditProduk> {
     );
   }
 
-  Container buildRecipe() {
-    return Container(
-      //padding: const EdgeInsets.all(defaultPadding),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(
-          children: [
-            const Text(
-              'Recipe',
-              style: TextStyle(
-                  fontSize: 16, fontWeight: FontWeight.bold, color: textColor),
+  Column buildRecipe() {
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Row(
+        children: [
+          const Text(
+            'Recipe',
+            style: TextStyle(
+                fontSize: 16, fontWeight: FontWeight.bold, color: textColor),
+          ),
+          const Spacer(),
+          ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(backgroundColor: primaryColor),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => EditRecipe(
+                              idProduk: widget.detailProduk.id,
+                              nama: widget.detailProduk.nama,
+                            )));
+                //getImageFromGallery();
+              },
+              icon: const Icon(
+                LineIcons.plus,
+                color: textColorInvert,
+              ),
+              label: const Text(
+                'Tambah Resep',
+                style: TextStyle(color: textColorInvert),
+              ))
+        ],
+      ),
+      const SizedBox(
+        height: contentPadding,
+      ),
+      const Divider(
+        height: 0,
+        color: primaryColor,
+      ),
+      const SizedBox(
+        height: contentPadding,
+      ),
+      BlocBuilder<RecipeBloc, RecipeState>(builder: (context, state) {
+        if (state is RecipeLoading) {
+          return Expanded(
+            child: Container(
+              padding: const EdgeInsets.all(defaultPadding),
+              child: const Center(
+                  child: CircularProgressIndicator(
+                backgroundColor: primaryColor,
+              )),
             ),
-            const Spacer(),
-            ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(backgroundColor: primaryColor),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => EditRecipe(
-                                idProduk: widget.detailProduk.id,
-                                nama: widget.detailProduk.nama,
-                              )));
-                  //getImageFromGallery();
-                },
-                icon: const Icon(LineIcons.plus),
-                label: const Text('Tambah Resep'))
-          ],
-        ),
-        const SizedBox(
-          height: contentPadding,
-        ),
-        const Divider(
-          height: 0,
-          color: primaryColor,
-        ),
-        const SizedBox(
-          height: contentPadding,
-        ),
-        BlocBuilder<RecipeBloc, RecipeState>(builder: (context, state) {
-          if (state is RecipeLoading) {
+          );
+        } else {
+          RecipeLoaded recipeLoaded = state as RecipeLoaded;
+          if (recipeLoaded.data.isNotEmpty) {
+            return Expanded(
+                child: ListView.separated(
+              itemCount: recipeLoaded.data.length,
+              separatorBuilder: (context, index) {
+                return const Divider(
+                  color: primaryColor,
+                );
+              },
+              itemBuilder: (BuildContext context, int index) {
+                return Row(
+                  children: [
+                    Text(
+                      recipeLoaded.data[index].nama,
+                      style: const TextStyle(color: textColor),
+                    ),
+                    const Spacer(),
+                    Text(
+                      recipeLoaded.data[index].usage.toString(),
+                      style: const TextStyle(
+                          color: textColor, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(
+                      width: defaultPadding,
+                    ),
+                    Text(
+                      recipeLoaded.data[index].satuan,
+                      style: const TextStyle(
+                          color: textColor, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                );
+              },
+            ));
+          } else {
             return Expanded(
               child: Container(
                 padding: const EdgeInsets.all(defaultPadding),
                 child: const Center(
-                    child: CircularProgressIndicator(
-                  backgroundColor: primaryColor,
-                )),
-              ),
-            );
-          } else {
-            RecipeLoaded recipeLoaded = state as RecipeLoaded;
-            if (recipeLoaded.data.isNotEmpty) {
-              return Expanded(
-                  child: ListView.separated(
-                itemCount: recipeLoaded.data.length,
-                separatorBuilder: (context, index) {
-                  return const Divider(
-                    color: primaryColor,
-                  );
-                },
-                itemBuilder: (BuildContext context, int index) {
-                  return Row(
-                    children: [
-                      Text(
-                        recipeLoaded.data[index].nama,
-                        style: const TextStyle(color: textColor),
-                      ),
-                      const Spacer(),
-                      Text(
-                        recipeLoaded.data[index].usage.toString(),
-                        style: const TextStyle(
-                            color: textColor, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(
-                        width: defaultPadding,
-                      ),
-                      Text(
-                        recipeLoaded.data[index].satuan,
-                        style: const TextStyle(
-                            color: textColor, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  );
-                },
-              ));
-            } else {
-              return Expanded(
-                child: Container(
-                  padding: const EdgeInsets.all(defaultPadding),
-                  child: const Center(
-                    child: Text(
-                      'Belum Ada Data',
-                      style: TextStyle(color: textColor),
-                    ),
+                  child: Text(
+                    'Belum Ada Data',
+                    style: TextStyle(color: textColor),
                   ),
                 ),
-              );
-            }
+              ),
+            );
           }
-        })
-      ]),
-    );
+        }
+      })
+    ]);
   }
 
   Container buildDetail(BuildContext context) {

@@ -99,7 +99,7 @@ class _PreviewPageState extends State<PreviewPage> {
                   Navigator.pop(context);
                 }),
       ),
-      body: Container(
+      body: SizedBox(
         height: double.infinity,
         child: Column(
           children: <Widget>[

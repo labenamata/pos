@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pos_app/bloc/produk_bloc.dart';
+import 'package:pos_app/bloc/produk/produk_bloc.dart';
 import 'package:pos_app/bloc/recipe_bloc.dart';
 import 'package:pos_app/constant.dart';
 import 'package:pos_app/model/produk_model.dart';

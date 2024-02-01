@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:pos_app/bloc/image_bloc.dart';
-import 'package:pos_app/bloc/produk_bloc.dart';
+import 'package:pos_app/bloc/produk/produk_bloc.dart';
 import 'package:pos_app/constant.dart';
 import 'package:pos_app/page/drawer.dart';
 import 'package:pos_app/page/produk/add_produk.dart';

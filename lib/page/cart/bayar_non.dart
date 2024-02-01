@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:line_icons/line_icons.dart';
-import 'package:pos_app/bloc/cart_bloc.dart';
+import 'package:pos_app/bloc/cart/cart_bloc.dart';
 import 'package:pos_app/bloc/konfirmasi_bloc.dart';
 import 'package:pos_app/bloc/transaksi_bloc.dart';
 import 'package:pos_app/constant.dart';

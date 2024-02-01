@@ -2,7 +2,7 @@ import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:line_icons/line_icons.dart';
-import 'package:pos_app/bloc/cart_bloc.dart';
+import 'package:pos_app/bloc/cart/cart_bloc.dart';
 import 'package:pos_app/bloc/login/login_bloc.dart';
 import 'package:pos_app/bloc/transaksi_bloc.dart';
 import 'package:pos_app/constant.dart';
@@ -18,7 +18,7 @@ Widget menuDrawer(BuildContext context) {
     child: Column(
       children: [
         BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
-          LoginState info = state as LoginState;
+          LoginState info = state;
 
           return UserAccountsDrawerHeader(
               decoration: const BoxDecoration(color: primaryColor),
@@ -68,8 +68,7 @@ Widget menuDrawer(BuildContext context) {
             style: TextStyle(color: textColor, fontSize: 14),
           ),
           onTap: () {
-            CartBloc cart = BlocProvider.of<CartBloc>(context);
-            cart.add(EmptyCart());
+            context.read<CartBloc>().add(EmptyCart());
             Navigator.pop(context);
             Navigator.push(
               context,

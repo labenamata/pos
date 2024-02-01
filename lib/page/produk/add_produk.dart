@@ -5,13 +5,14 @@ import 'package:image_picker/image_picker.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:pos_app/bloc/image_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as bawah;
-import 'package:pos_app/bloc/kategori_bloc.dart';
-import 'package:pos_app/bloc/produk_bloc.dart';
+import 'package:pos_app/bloc/kategori/kategori_bloc.dart';
+import 'package:pos_app/bloc/produk/produk_bloc.dart';
 import 'package:pos_app/constant.dart';
 import 'package:pos_app/model/kategori_model.dart';
+import 'package:pos_app/page/produk/komponen/form_produk.dart';
 import 'package:pos_app/page/produk/produk_page.dart';
 import 'package:pos_app/widget/preview_page.dart';
-import 'package:image/image.dart' as IMG;
+import 'package:image/image.dart' as pic;
 
 class ProdukTambah extends StatefulWidget {
   const ProdukTambah({
@@ -40,6 +41,7 @@ class _ProdukTambahState extends State<ProdukTambah> {
 
   final picker = ImagePicker();
   final kategoriForm = GlobalKey<FormState>();
+  final produkForm = GlobalKey<FormState>();
 
   @override
   @override
@@ -82,69 +84,11 @@ class _ProdukTambahState extends State<ProdukTambah> {
               const SizedBox(
                 height: defaultPadding,
               ),
-              TextField(
-                controller: nameController,
-                cursorColor: primaryColor,
-                textCapitalization: TextCapitalization.words,
-                decoration: const InputDecoration(
-                    contentPadding: EdgeInsets.zero,
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(width: 1, color: primaryColor),
-                    ),
-                    label: Text('Nama Produk *'),
-                    labelStyle: TextStyle(fontSize: 14, color: textColor),
-                    focusColor: primaryColor,
-                    enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(width: 1, color: textColor))),
-              ),
-              const SizedBox(
-                height: defaultPadding,
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: pokokController,
-                      cursorColor: primaryColor,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.zero,
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide:
-                                BorderSide(width: 1, color: primaryColor),
-                          ),
-                          label: Text('Harga Pokok *'),
-                          labelStyle: TextStyle(fontSize: 14, color: textColor),
-                          focusColor: primaryColor,
-                          enabledBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(width: 1, color: textColor))),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: defaultPadding,
-                  ),
-                  Expanded(
-                    child: TextField(
-                      controller: jualController,
-                      cursorColor: primaryColor,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.zero,
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide:
-                                BorderSide(width: 1, color: primaryColor),
-                          ),
-                          label: Text('Harga Jual *'),
-                          labelStyle: TextStyle(fontSize: 14, color: textColor),
-                          focusColor: primaryColor,
-                          enabledBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(width: 1, color: textColor))),
-                    ),
-                  ),
-                ],
-              ),
+              FormProduk(
+                  formKey: produkForm,
+                  nameController: nameController,
+                  pokokController: pokokController,
+                  jualController: jualController),
               const SizedBox(
                 height: defaultPadding,
               ),
@@ -153,7 +97,7 @@ class _ProdukTambahState extends State<ProdukTambah> {
     );
   }
 
-  Container buildBottom(BuildContext context) {
+  Widget buildBottom(BuildContext context) {
     return Container(
       height: 90,
       padding: const EdgeInsets.all(defaultPadding),
@@ -178,16 +122,15 @@ class _ProdukTambahState extends State<ProdukTambah> {
             child: ElevatedButton(
                 style: ElevatedButton.styleFrom(backgroundColor: primaryColor),
                 onPressed: () {
-                  ProdukBloc produk = BlocProvider.of<ProdukBloc>(context);
+                  if (produkForm.currentState!.validate()) {
+                    //ProdukBloc produk = BlocProvider.of<ProdukBloc>(context);
 
-                  IMG.Image? img = IMG.decodeImage(gambar!);
-                  IMG.Image resized =
-                      IMG.copyResize(img!, width: 200, height: 200);
-                  resizedImg = Uint8List.fromList(IMG.encodePng(resized));
-                  if (nameController.text.isNotEmpty &&
-                      pokokController.text.isNotEmpty &&
-                      jualController.text.isNotEmpty) {
-                    produk.add(TambahProduk(
+                    pic.Image? img = pic.decodeImage(gambar!);
+                    pic.Image resized =
+                        pic.copyResize(img!, width: 200, height: 200);
+                    resizedImg = Uint8List.fromList(pic.encodePng(resized));
+
+                    context.read<ProdukBloc>().add(TambahProduk(
                         nama: nameController.text,
                         hargaPokok: int.parse(pokokController.text),
                         hargaJual: int.parse(jualController.text),
@@ -206,7 +149,7 @@ class _ProdukTambahState extends State<ProdukTambah> {
     );
   }
 
-  Column buildKategori() {
+  Widget buildKategori() {
     TextEditingController namaKategori = TextEditingController();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -322,13 +265,6 @@ class _ProdukTambahState extends State<ProdukTambah> {
                                 alignment: WrapAlignment.start,
                                 children: kategoriLoaded.data.map((e) {
                                   return tagChip(kategori: e);
-                                  // return Container(
-                                  //   padding: const EdgeInsets.all(5),
-                                  //   decoration: BoxDecoration(
-                                  //       border:
-                                  //           Border.all(color: primaryColor)),
-                                  //   child: Text(e.nama),
-                                  // );
                                 }).toList(),
                               );
                             }
@@ -365,8 +301,7 @@ class _ProdukTambahState extends State<ProdukTambah> {
           setState(() {
             initKategori = {'idKategori': kategori.id, 'nama': kategori.nama};
           });
-          Future.delayed(
-              const Duration(milliseconds: 500), () => Navigator.pop(context));
+          Navigator.pop(context);
         },
         child: Stack(
           children: [
@@ -394,15 +329,22 @@ class _ProdukTambahState extends State<ProdukTambah> {
                 ),
               ),
             ),
-            const Positioned(
+            Positioned(
               right: 0,
-              child: CircleAvatar(
-                backgroundColor: primaryColor,
-                radius: 8.0,
-                child: Icon(
-                  LineIcons.times,
-                  size: 10.0,
-                  color: Colors.white,
+              child: GestureDetector(
+                onTap: () {
+                  context
+                      .read<KategoriBloc>()
+                      .add(HapusKategori(id: kategori.id));
+                },
+                child: const CircleAvatar(
+                  backgroundColor: Colors.red,
+                  radius: 10.0,
+                  child: Icon(
+                    LineIcons.times,
+                    size: 10.0,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             )

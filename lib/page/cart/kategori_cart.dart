@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pos_app/bloc/cart_bloc.dart';
-import 'package:pos_app/bloc/kategori_bloc.dart';
+import 'package:pos_app/bloc/cart/cart_bloc.dart';
+import 'package:pos_app/bloc/kategori/kategori_bloc.dart';
 import 'package:pos_app/constant.dart';
 
 class KategoriCart extends StatefulWidget {

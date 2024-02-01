@@ -1,5 +1,7 @@
 import 'dart:typed_data';
 import 'package:pos_app/database/cart_base.dart';
+import 'package:pos_app/database/kategori_base.dart';
+import 'package:pos_app/database/produk_base.dart';
 import 'package:pos_app/db_helper.dart';
 
 class Cart {
@@ -46,11 +48,14 @@ class Cart {
         'cart.total';
 
     if (join == null) {
-      sql = '$fieldSelect from produk '
-          'left join ${CartQueri.tableName} on ${CartQueri.tableName}.idProduk = produk.id';
+      sql = '$fieldSelect from ${ProdukQueri.tableName} '
+          'left join ${CartQueri.tableName} on ${CartQueri.tableName}.idProduk = ${ProdukQueri.tableName}.id '
+          'join ${KategoriQueri.tableName} on ${KategoriQueri.tableName}.id = ${ProdukQueri.tableName}.idKategori';
     } else {
       sql = '$fieldSelect from ${CartQueri.tableName} '
-          'join produk on ${CartQueri.tableName}.idProduk = produk.id where cart.jumlah <> 0';
+          'join ${ProdukQueri.tableName} on ${CartQueri.tableName}.idProduk = ${ProdukQueri.tableName}.id '
+          'join ${KategoriQueri.tableName} on ${KategoriQueri.tableName}.id = ${ProdukQueri.tableName}.idKategori '
+          'where ${CartQueri.tableName}.jumlah <> 0';
     }
 
     if (idKategori != null) {
