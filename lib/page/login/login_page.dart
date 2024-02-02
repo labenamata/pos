@@ -46,7 +46,11 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(
               height: defaultPadding,
             ),
-            FormWidget()
+            FormWidget(),
+            SizedBox(
+              height: defaultPadding,
+            ),
+            Text('* User Password Default adalah admin admin')
           ]),
         ),
       ),
