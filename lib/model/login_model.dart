@@ -58,26 +58,17 @@ class Login {
     return loginInfo;
   }
 
-  static Future<Login> addUser(Map<String, dynamic> data) async {
+  static Future<void> addUser(Map<String, dynamic> data) async {
     DBHelper helper = DBHelper();
-    late Login loginInfo;
+    //late Login loginInfo;
     String sql = 'select * from user where username = \'${data['username']}\'';
     var resultObject = await helper.rawData(sql);
 
-    if (resultObject.isNotEmpty) {
-      loginInfo = Login(
-          msg: 'Username Sudah Ada',
-          status: 'gagal',
-          infoLogin: UserLogin.fromJson(resultObject[0]));
-    } else {
-      var newUser = helper.insert(UserQueri.tableName, data);
-      loginInfo = Login(
-          msg: 'User Tidak Ditemukan',
-          status: 'gagal',
-          infoLogin: UserLogin.fromJson(newUser));
+    if (resultObject.isEmpty) {
+      await helper.insert(UserQueri.tableName, data);
     }
 
-    return loginInfo;
+    //return loginInfo;
   }
 
   static updateUser(

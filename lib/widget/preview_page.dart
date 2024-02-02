@@ -26,6 +26,8 @@ class PreviewPage extends StatefulWidget {
 class _PreviewPageState extends State<PreviewPage> {
   final GlobalKey<ExtendedImageEditorState> editorKey = GlobalKey();
   late ImageBloc imageBloc;
+  bool isFinish = false;
+
   ImageProvider provider = const ExtendedExactAssetImageProvider(
     'assets/noimage.jpg',
     cacheRawData: true,
@@ -71,7 +73,6 @@ class _PreviewPageState extends State<PreviewPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 1,
         backgroundColor: backgroundcolor,
         title: const Text(
           'Preview Page',
@@ -80,9 +81,14 @@ class _PreviewPageState extends State<PreviewPage> {
         actions: <Widget>[
           IconButton(
             color: textColor,
-            icon: const Icon(LineIcons.check),
+            icon: isFinish
+                ? const CircularProgressIndicator()
+                : const Icon(LineIcons.check),
             onPressed: () async {
               await crop();
+              setState(() {
+                isFinish = true;
+              });
               Future.delayed(const Duration(milliseconds: 100), () {
                 Navigator.pop(context);
               });

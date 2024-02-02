@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pos_app/bloc/bahan_bloc.dart';
+import 'package:month_year_picker/month_year_picker.dart';
+import 'package:pos_app/bloc/bahan/bahan_bloc.dart';
 import 'package:pos_app/bloc/cart/cart_bloc.dart';
 import 'package:pos_app/bloc/image_bloc.dart';
 import 'package:pos_app/bloc/kategori/kategori_bloc.dart';
-import 'package:pos_app/bloc/konfirmasi_bloc.dart';
+import 'package:pos_app/bloc/konfirmasi/konfirmasi_bloc.dart';
 import 'package:pos_app/bloc/login/login_bloc.dart';
 import 'package:pos_app/bloc/produk/produk_bloc.dart';
-import 'package:pos_app/bloc/recipe_bloc.dart';
-import 'package:pos_app/bloc/transaksi_bloc.dart';
+import 'package:pos_app/bloc/recipe/recipe_bloc.dart';
+import 'package:pos_app/bloc/transaksi/transaksi_bloc.dart';
+import 'package:pos_app/bloc/user/user_bloc.dart';
+import 'package:pos_app/constant.dart';
 import 'package:pos_app/page/login/login_page.dart';
+// ignore: depend_on_referenced_packages
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,15 +53,22 @@ class MyApp extends StatelessWidget {
               create: (context) =>
                   KonfirmasiBloc(KonfirmasiLoading(''))..add(GetKonfirmasi())),
           BlocProvider<LoginBloc>(create: (context) => LoginBloc()),
+          BlocProvider<UserBloc>(create: (context) => UserBloc(UserLoading())),
         ],
         child: SafeArea(
           child: MaterialApp(
             title: 'POS Application',
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
+                primaryColor: primaryColor,
                 useMaterial3: true,
                 fontFamily: GoogleFonts.poppins().fontFamily),
             home: const LoginPage(),
+            localizationsDelegates: const [
+              GlobalWidgetsLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              MonthYearPickerLocalizations.delegate,
+            ],
           ),
         ));
   }

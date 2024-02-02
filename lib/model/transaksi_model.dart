@@ -33,9 +33,11 @@ class Transaksi {
           'FROM ${TransaksiQueri.tableName} WHERE tanggal = $tanggal and bulan = $bulan and tahun = $tahun and status = '
           '\'$status\'';
     } else if (tanggal == null && bulan != null && tahun != null) {
-      'FROM ${TransaksiQueri.tableName} WHERE bulan = $bulan and tahun = $tahun and status = \'$status\'';
+      sql =
+          'FROM ${TransaksiQueri.tableName} WHERE bulan = $bulan and tahun = $tahun and status = \'$status\'';
     } else if (tanggal == null && bulan == null && tahun != null) {
-      'FROM ${TransaksiQueri.tableName} WHERE tahun = $tahun and status = \'$status\'';
+      sql =
+          'FROM ${TransaksiQueri.tableName} WHERE tahun = $tahun and status = \'$status\'';
     }
 
     String sqlAll = 'SELECT * ';

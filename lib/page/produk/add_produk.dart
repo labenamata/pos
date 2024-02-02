@@ -69,7 +69,7 @@ class _ProdukTambahState extends State<ProdukTambah> {
                   );
                 }),
       ),
-      bottomNavigationBar: buildBottom(context),
+      //bottomNavigationBar: buildBottom(context),
       body: Container(
         padding: const EdgeInsets.all(defaultPadding),
         child: Column(
@@ -92,6 +92,7 @@ class _ProdukTambahState extends State<ProdukTambah> {
               const SizedBox(
                 height: defaultPadding,
               ),
+              buildBottom(context)
             ]),
       ),
     );
@@ -383,12 +384,14 @@ class _ProdukTambahState extends State<ProdukTambah> {
                       context: context,
                       builder: (BuildContext context) {
                         return Dialog(
+                          backgroundColor: backgroundcolor,
                           child: Container(
                             padding: const EdgeInsets.all(defaultPadding),
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Material(
+                                  color: Colors.transparent,
                                   child: InkWell(
                                     onTap: () {
                                       Navigator.pop(context);
@@ -422,6 +425,7 @@ class _ProdukTambahState extends State<ProdukTambah> {
                                   height: contentPadding,
                                 ),
                                 Material(
+                                  color: Colors.transparent,
                                   child: InkWell(
                                     onTap: () {
                                       Navigator.pop(context);

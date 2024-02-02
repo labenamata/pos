@@ -8,7 +8,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as bawah;
 import 'package:pos_app/bloc/image_bloc.dart';
 import 'package:pos_app/bloc/kategori/kategori_bloc.dart';
 import 'package:pos_app/bloc/produk/produk_bloc.dart';
-import 'package:pos_app/bloc/recipe_bloc.dart';
+import 'package:pos_app/bloc/recipe/recipe_bloc.dart';
 import 'package:pos_app/constant.dart';
 import 'package:pos_app/model/kategori_model.dart';
 import 'package:pos_app/model/produk_model.dart';

@@ -1,17 +1,17 @@
-import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:pos_app/bloc/cart/cart_bloc.dart';
 import 'package:pos_app/bloc/login/login_bloc.dart';
-import 'package:pos_app/bloc/transaksi_bloc.dart';
+import 'package:pos_app/bloc/transaksi/transaksi_bloc.dart';
+import 'package:pos_app/bloc/user/user_bloc.dart';
 import 'package:pos_app/constant.dart';
 import 'package:pos_app/page/cart/cart_page.dart';
 import 'package:pos_app/page/login/login_page.dart';
 import 'package:pos_app/page/produk/produk_page.dart';
 import 'package:pos_app/page/report/laporan.dart';
+import 'package:pos_app/page/user/user_page.dart';
 
-var faker = Faker();
 Widget menuDrawer(BuildContext context) {
   return Drawer(
     backgroundColor: backgroundcolor,
@@ -81,12 +81,13 @@ Widget menuDrawer(BuildContext context) {
             int tanggal = DateTime.now().day;
             int bulan = DateTime.now().month;
             int tahun = DateTime.now().year;
-            TransaksiBloc transaksi = BlocProvider.of<TransaksiBloc>(context);
-            transaksi.add(GetTransaksi(
+
+            context.read<TransaksiBloc>().add(GetTransaksi(
                 status: 'finish',
                 tanggal: tanggal,
                 bulan: bulan,
                 tahun: tahun));
+
             Navigator.pop(context);
             Navigator.push(
               context,
@@ -100,6 +101,25 @@ Widget menuDrawer(BuildContext context) {
           ),
           title: const Text(
             'Laporan',
+            style: TextStyle(color: textColor, fontSize: 14),
+          ),
+        ),
+        ListTile(
+          onTap: () {
+            context.read<UserBloc>().add(GetUser());
+            Navigator.pop(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const UserPage()),
+            );
+          },
+          leading: const Icon(
+            LineIcons.userCircle,
+            size: 30,
+            color: primaryColor,
+          ),
+          title: const Text(
+            'User',
             style: TextStyle(color: textColor, fontSize: 14),
           ),
         ),

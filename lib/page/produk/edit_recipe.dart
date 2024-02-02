@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as bawah;
-import 'package:pos_app/bloc/bahan_bloc.dart';
-import 'package:pos_app/bloc/recipe_bloc.dart';
+import 'package:pos_app/bloc/bahan/bahan_bloc.dart';
+import 'package:pos_app/bloc/recipe/recipe_bloc.dart';
 
 import 'package:pos_app/constant.dart';
 
