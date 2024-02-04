@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:pos_app/bloc/cart/cart_bloc.dart';
 import 'package:pos_app/constant.dart';
 import 'package:pos_app/page/login/form_widget.dart';
 
@@ -14,6 +16,12 @@ class _LoginPageState extends State<LoginPage> {
   bool isObscure = true;
   TextEditingController userController = TextEditingController();
   TextEditingController passController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<CartBloc>().add(GetCart());
+  }
 
   @override
   Widget build(BuildContext context) {

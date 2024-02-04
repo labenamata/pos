@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:pos_app/database/bahan_base.dart';
 import 'package:pos_app/database/cart_base.dart';
 import 'package:pos_app/database/detail_base.dart';
@@ -37,27 +36,27 @@ class DBHelper {
     final dbPath = await sqlite.getDatabasesPath();
     return sqlite.openDatabase(path.join(dbPath, 'pos.db'),
         onCreate: (db, version) async {
-      for (var tables in createTable) {
-        await db.execute(tables).then((value) {}).catchError((err) {
-          if (kDebugMode) {
-            print("errornya ${err.toString()}");
-          }
-        });
-      }
-      Map<String, dynamic> data = {
-        'nama': 'Master Admin',
-        'username': 'admin',
-        'password': 'admin',
-        'status': 'admin',
-      };
-      var result =
-          await db.query('user', where: 'username = ?', whereArgs: ['admin']);
-      if (result.isEmpty) {
-        await db.insert(
-          'user',
-          data,
-        );
-      }
+      // for (var tables in createTable) {
+      //   await db.execute(tables).then((value) {}).catchError((err) {
+      //     if (kDebugMode) {
+      //       print("errornya ${err.toString()}");
+      //     }
+      //   });
+      // }
+      // Map<String, dynamic> data = {
+      //   'nama': 'Master Admin',
+      //   'username': 'admin',
+      //   'password': 'admin',
+      //   'status': 'admin',
+      // };
+      // var result =
+      //     await db.query('user', where: 'username = ?', whereArgs: ['admin']);
+      // if (result.isEmpty) {
+      //   await db.insert(
+      //     'user',
+      //     data,
+      //   );
+      // }
     }, version: 1);
   }
 

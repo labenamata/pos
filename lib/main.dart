@@ -13,9 +13,9 @@ import 'package:pos_app/bloc/recipe/recipe_bloc.dart';
 import 'package:pos_app/bloc/transaksi/transaksi_bloc.dart';
 import 'package:pos_app/bloc/user/user_bloc.dart';
 import 'package:pos_app/constant.dart';
-import 'package:pos_app/page/login/login_page.dart';
 // ignore: depend_on_referenced_packages
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:pos_app/page/splash_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -63,7 +63,7 @@ class MyApp extends StatelessWidget {
                 primaryColor: primaryColor,
                 useMaterial3: true,
                 fontFamily: GoogleFonts.poppins().fontFamily),
-            home: const LoginPage(),
+            home: const SplashScreen(),
             localizationsDelegates: const [
               GlobalWidgetsLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,
