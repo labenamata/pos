@@ -47,20 +47,17 @@ class _ProdukTambahState extends State<ProdukTambah> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundcolor,
       appBar: AppBar(
-        scrolledUnderElevation: 0,
-        backgroundColor: backgroundcolor,
+        elevation: 1,
         title: const Text(
           'Tambah Produk',
-          style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         leading: // Ensure Scaffold is in context
             IconButton(
                 icon: const Icon(
                   LineIcons.angleLeft,
-                  color: textColor,
                 ),
                 onPressed: () {
                   Navigator.pushReplacement(
@@ -90,7 +87,7 @@ class _ProdukTambahState extends State<ProdukTambah> {
                   pokokController: pokokController,
                   jualController: jualController),
               const SizedBox(
-                height: defaultPadding,
+                height: defaultPadding * 2,
               ),
               buildBottom(context)
             ]),
@@ -99,54 +96,50 @@ class _ProdukTambahState extends State<ProdukTambah> {
   }
 
   Widget buildBottom(BuildContext context) {
-    return Container(
-      height: 90,
-      padding: const EdgeInsets.all(defaultPadding),
-      child: Row(
-        children: [
-          Expanded(
-            child: OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: primaryColor, width: 2)),
-                onPressed: () {
+    return Row(
+      children: [
+        Expanded(
+          child: OutlinedButton(
+              // style: OutlinedButton.styleFrom(
+              //     side: const BorderSide(color: primaryColor, width: 2)),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text(
+                'Batal',
+                style: TextStyle(fontSize: 14),
+              )),
+        ),
+        const SizedBox(
+          width: defaultPadding,
+        ),
+        Expanded(
+          child: ElevatedButton(
+              //style: ElevatedButton.styleFrom(backgroundColor: primaryColor),
+              onPressed: () {
+                if (produkForm.currentState!.validate()) {
+                  //ProdukBloc produk = BlocProvider.of<ProdukBloc>(context);
+
+                  pic.Image? img = pic.decodeImage(gambar!);
+                  pic.Image resized =
+                      pic.copyResize(img!, width: 200, height: 200);
+                  resizedImg = Uint8List.fromList(pic.encodePng(resized));
+
+                  context.read<ProdukBloc>().add(TambahProduk(
+                      nama: nameController.text,
+                      hargaPokok: int.parse(pokokController.text),
+                      hargaJual: int.parse(jualController.text),
+                      idKategori: initKategori['idKategori'],
+                      img: resizedImg!));
                   Navigator.pop(context);
-                },
-                child: const Text(
-                  'Batal',
-                  style: TextStyle(color: textColor, fontSize: 14),
-                )),
-          ),
-          const SizedBox(
-            width: defaultPadding,
-          ),
-          Expanded(
-            child: ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: primaryColor),
-                onPressed: () {
-                  if (produkForm.currentState!.validate()) {
-                    //ProdukBloc produk = BlocProvider.of<ProdukBloc>(context);
-
-                    pic.Image? img = pic.decodeImage(gambar!);
-                    pic.Image resized =
-                        pic.copyResize(img!, width: 200, height: 200);
-                    resizedImg = Uint8List.fromList(pic.encodePng(resized));
-
-                    context.read<ProdukBloc>().add(TambahProduk(
-                        nama: nameController.text,
-                        hargaPokok: int.parse(pokokController.text),
-                        hargaJual: int.parse(jualController.text),
-                        idKategori: initKategori['idKategori'],
-                        img: resizedImg!));
-                    Navigator.pop(context);
-                  }
-                },
-                child: const Text(
-                  'Simpan',
-                  style: TextStyle(color: textColorInvert, fontSize: 14),
-                )),
-          )
-        ],
-      ),
+                }
+              },
+              child: const Text(
+                'Simpan',
+                style: TextStyle(fontSize: 14),
+              )),
+        )
+      ],
     );
   }
 
@@ -172,7 +165,7 @@ class _ProdukTambahState extends State<ProdukTambah> {
                         BorderRadius.all(Radius.circular(defaultPadding))),
                 builder: (BuildContext context) {
                   return Container(
-                    height: MediaQuery.sizeOf(context).height / 2,
+                    height: MediaQuery.sizeOf(context).height - 200,
                     padding:
                         const EdgeInsets.symmetric(horizontal: defaultPadding),
                     decoration: const BoxDecoration(
@@ -182,16 +175,32 @@ class _ProdukTambahState extends State<ProdukTambah> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Padding(
-                          padding: EdgeInsets.all(10),
-                          child: Center(
-                            child: Text(
-                              'Kategori',
-                              style: TextStyle(fontSize: 16, color: textColor),
+                        Row(
+                          children: [
+                            const Spacer(),
+                            const Padding(
+                              padding: EdgeInsets.all(10),
+                              child: Text(
+                                'Kategori',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                ),
+                              ),
                             ),
-                          ),
+                            const Spacer(),
+                            GestureDetector(
+                              onTap: () => Navigator.pop(context),
+                              child: const SizedBox(
+                                height: 30,
+                                width: 30,
+                                child: Icon(LineIcons.times),
+                              ),
+                            )
+                          ],
                         ),
-                        // const Divider(),
+                        const SizedBox(
+                          height: defaultPadding * 2,
+                        ),
                         Form(
                           key: kategoriForm,
                           child: Row(
@@ -207,17 +216,10 @@ class _ProdukTambahState extends State<ProdukTambah> {
                                   },
                                   textCapitalization:
                                       TextCapitalization.sentences,
-                                  cursorColor: primaryColor,
                                   decoration: const InputDecoration(
-                                      contentPadding: EdgeInsets.zero,
-                                      label: Text('Nama Kategori'),
-                                      labelStyle: TextStyle(color: textColor),
-                                      focusedBorder: UnderlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: primaryColor)),
-                                      enabledBorder: UnderlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: textColor))),
+                                    contentPadding: EdgeInsets.zero,
+                                    label: Text('Nama Kategori'),
+                                  ),
                                 ),
                               ),
                               const SizedBox(
@@ -225,19 +227,23 @@ class _ProdukTambahState extends State<ProdukTambah> {
                               ),
                               IconButton(
                                 style: IconButton.styleFrom(
-                                    backgroundColor: primaryColor),
+                                    backgroundColor:
+                                        Theme.of(context).colorScheme.primary),
                                 onPressed: () {
                                   if (kategoriForm.currentState!.validate()) {
-                                    KategoriBloc kategori =
-                                        BlocProvider.of<KategoriBloc>(context);
-                                    kategori.add(TambahKategori(
-                                      name: namaKategori.text,
-                                    ));
+                                    context
+                                        .read<KategoriBloc>()
+                                        .add(TambahKategori(
+                                          name: namaKategori.text,
+                                        ));
+
                                     namaKategori.text = '';
                                   }
                                 },
-                                icon: const Icon(LineIcons.plus),
-                                color: textColorInvert,
+                                icon: const Icon(
+                                  LineIcons.plus,
+                                  color: Colors.white,
+                                ),
                               )
                             ],
                           ),
@@ -281,7 +287,9 @@ class _ProdukTambahState extends State<ProdukTambah> {
             children: [
               Text(
                 initKategori['nama'],
-                style: const TextStyle(color: primaryColor),
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                ),
               ),
               const Spacer(),
               const Icon(LineIcons.angleDown)
@@ -304,52 +312,43 @@ class _ProdukTambahState extends State<ProdukTambah> {
           });
           Navigator.pop(context);
         },
-        child: Stack(
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(
-                vertical: 5.0,
-                horizontal: 5.0,
-              ),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10.0,
-                  vertical: 10.0,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: primaryColor, width: 2),
-                  borderRadius: BorderRadius.circular(100.0),
-                ),
-                child: Text(
-                  kategori.nama,
-                  style: const TextStyle(
-                    color: textColor,
-                    fontSize: 15.0,
-                  ),
+        child: Container(
+          height: 50,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 10.0,
+            vertical: 10.0,
+          ),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primaryContainer,
+            borderRadius: BorderRadius.circular(100.0),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                kategori.nama,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                  fontSize: 15.0,
                 ),
               ),
-            ),
-            Positioned(
-              right: 0,
-              child: GestureDetector(
+              VerticalDivider(
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
+              ),
+              GestureDetector(
                 onTap: () {
                   context
                       .read<KategoriBloc>()
                       .add(HapusKategori(id: kategori.id));
                 },
-                child: const CircleAvatar(
-                  backgroundColor: Colors.red,
-                  radius: 10.0,
-                  child: Icon(
-                    LineIcons.times,
-                    size: 10.0,
-                    color: Colors.white,
-                  ),
+                child: Icon(
+                  LineIcons.times,
+                  size: 20.0,
+                  color: Theme.of(context).colorScheme.onPrimaryContainer,
                 ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ));
   }
 
@@ -359,7 +358,7 @@ class _ProdukTambahState extends State<ProdukTambah> {
       children: [
         const Text(
           'Foto',
-          style: TextStyle(color: textColor, fontSize: 14),
+          style: TextStyle(fontSize: 14),
         ),
         const SizedBox(
           height: contentPadding,
@@ -367,7 +366,9 @@ class _ProdukTambahState extends State<ProdukTambah> {
         Container(
           //width: double.infinity,
           decoration: BoxDecoration(
-              border: Border.all(color: primaryColor),
+              border: Border.all(
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
+              ),
               borderRadius:
                   const BorderRadius.all(Radius.circular(defaultRadius))),
           child: BlocBuilder<ImageBloc, ImageState>(builder: (context, state) {
@@ -384,7 +385,6 @@ class _ProdukTambahState extends State<ProdukTambah> {
                       context: context,
                       builder: (BuildContext context) {
                         return Dialog(
-                          backgroundColor: backgroundcolor,
                           child: Container(
                             padding: const EdgeInsets.all(defaultPadding),
                             child: Column(
@@ -401,22 +401,24 @@ class _ProdukTambahState extends State<ProdukTambah> {
                                               builder: (_) => const PreviewPage(
                                                   picFrom: 'gal')));
                                     },
-                                    child: const Row(
+                                    child: Row(
                                       children: [
                                         Icon(
                                           LineIcons.image,
                                           size: 50,
-                                          color: primaryColor,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onPrimaryContainer,
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           width: defaultPadding,
                                         ),
-                                        Text(
+                                        const Text(
                                           'Galeri',
                                           style: TextStyle(fontSize: 20),
                                         ),
-                                        Spacer(),
-                                        Icon(LineIcons.angleRight)
+                                        const Spacer(),
+                                        const Icon(LineIcons.angleRight)
                                       ],
                                     ),
                                   ),
@@ -435,22 +437,24 @@ class _ProdukTambahState extends State<ProdukTambah> {
                                               builder: (_) => const PreviewPage(
                                                   picFrom: 'cam')));
                                     },
-                                    child: const Row(
+                                    child: Row(
                                       children: [
                                         Icon(
                                           LineIcons.camera,
                                           size: 50,
-                                          color: primaryColor,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onPrimaryContainer,
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           width: defaultPadding,
                                         ),
-                                        Text(
+                                        const Text(
                                           'Kamera',
                                           style: TextStyle(fontSize: 20),
                                         ),
-                                        Spacer(),
-                                        Icon(LineIcons.angleRight)
+                                        const Spacer(),
+                                        const Icon(LineIcons.angleRight)
                                       ],
                                     ),
                                   ),
@@ -472,9 +476,9 @@ class _ProdukTambahState extends State<ProdukTambah> {
                         height: 80,
                       ),
                     ),
-                    const Icon(
+                    Icon(
                       LineIcons.camera,
-                      color: primaryColor,
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
                     )
                   ],
                 ),
@@ -485,84 +489,4 @@ class _ProdukTambahState extends State<ProdukTambah> {
       ],
     );
   }
-}
-
-Widget addKategori(BuildContext context) {
-  TextEditingController nameController = TextEditingController();
-
-  return Dialog(
-    child: Container(
-      padding: const EdgeInsets.all(defaultPadding),
-      decoration: const BoxDecoration(color: secondaryColor),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Text(
-            'Tambah Kategori',
-            style: TextStyle(
-                fontWeight: FontWeight.bold, color: textColor, fontSize: 16),
-          ),
-          const SizedBox(
-            height: defaultPadding,
-          ),
-          const Divider(
-            color: primaryColor,
-          ),
-          const SizedBox(
-            height: defaultPadding,
-          ),
-          TextField(
-            controller: nameController,
-            cursorColor: primaryColor,
-            textCapitalization: TextCapitalization.sentences,
-            decoration: const InputDecoration(
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(width: 1, color: primaryColor),
-                ),
-                label: Text('Nama Kategori'),
-                labelStyle: TextStyle(fontSize: 14, color: textColor),
-                focusColor: primaryColor,
-                enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(width: 1, color: textColor))),
-          ),
-          const SizedBox(
-            height: defaultPadding,
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red[400]),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: const Icon(Icons.dangerous_rounded),
-                    label: const Text('Batal')),
-              ),
-              const SizedBox(
-                width: defaultPadding,
-              ),
-              Expanded(
-                child: ElevatedButton.icon(
-                    style:
-                        ElevatedButton.styleFrom(backgroundColor: primaryColor),
-                    onPressed: () {
-                      KategoriBloc kategori =
-                          BlocProvider.of<KategoriBloc>(context);
-                      kategori.add(TambahKategori(
-                        name: nameController.text,
-                      ));
-                      Navigator.pop(context);
-                    },
-                    icon: const Icon(Icons.save_rounded),
-                    label: const Text('Save')),
-              )
-            ],
-          )
-        ],
-      ),
-    ),
-  );
 }

@@ -8,30 +8,20 @@ Widget searchProduk(BuildContext context) {
   TextEditingController searchController = TextEditingController();
   return TextField(
     onEditingComplete: () {
-      ProdukBloc produk = BlocProvider.of<ProdukBloc>(context);
-      produk.add(SearchProduk(nama: searchController.text));
+      context.read<ProdukBloc>().add(SearchProduk(nama: searchController.text));
     },
     onChanged: (value) {
       if (value.isEmpty) {
-        ProdukBloc produk = BlocProvider.of<ProdukBloc>(context);
-        produk.add(SearchProduk(nama: ''));
+        context.read<ProdukBloc>().add(SearchProduk(nama: ''));
       }
     },
     decoration: InputDecoration(
-        contentPadding: const EdgeInsets.symmetric(horizontal: defaultPadding),
-        focusedBorder: const OutlineInputBorder(
-          borderSide: BorderSide(width: 1, color: primaryColor),
-        ),
-        enabledBorder: const OutlineInputBorder(
-          borderSide: BorderSide(width: 1, color: textColor),
-        ),
-        focusColor: primaryColor,
+        contentPadding: EdgeInsets.zero,
         suffixIcon: const Icon(
           LineIcons.search,
           color: primaryColor,
         ),
         labelText: 'Cari',
-        labelStyle: const TextStyle(color: textColor),
         hintStyle: TextStyle(color: textColor.withOpacity(0.5))),
     controller: searchController,
   );

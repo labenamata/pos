@@ -13,6 +13,14 @@ FutureOr<void> _tambahCart(
   CartLoaded stateCart = state as CartLoaded;
   Cart cart = stateCart.data.copyWith();
 
+  if (event.status == 'plus') {
+    cart.totalTransaksi = cart.totalTransaksi + event.harga;
+  } else {
+    if (cart.cart[event.idx].jumlah > 0) {
+      cart.totalTransaksi = cart.totalTransaksi - event.harga;
+    }
+  }
+
   cart.cart[event.idx] = ListCart(
       id: event.idProduk,
       nama: event.nama,
@@ -20,6 +28,7 @@ FutureOr<void> _tambahCart(
       harga: event.harga,
       jumlah: event.jumlah >= 0 ? event.jumlah : 0,
       total: event.total);
+
   Map<String, dynamic> data = {
     'idProduk': event.idProduk,
     'nama': event.nama,
@@ -27,14 +36,16 @@ FutureOr<void> _tambahCart(
     'jumlah': event.jumlah,
     'total': event.total,
   };
-  if (event.status == 'plus') {
-    cart.totalTransaksi = cart.totalTransaksi + event.harga;
-  } else {
-    //cart.totalTransaksi = cart.totalTransaksi - event.harga;
-    cart.totalTransaksi = event.jumlah >= 0
-        ? cart.totalTransaksi - event.harga
-        : cart.totalTransaksi;
-  }
+
+  // var total = cart.cart.fold(0, (p, c) => p + c.total);
+  // cart.totalTransaksi = total;
+  // if (event.status == 'plus') {
+  //   cart.totalTransaksi = cart.totalTransaksi + event.harga;
+  // } else {
+  //   cart.totalTransaksi = event.jumlah >= 0
+  //       ? cart.totalTransaksi - event.harga
+  //       : cart.totalTransaksi;
+  // }
 
   //emit(CartLoading(''));
   await Cart.addCart(data);

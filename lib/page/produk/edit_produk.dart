@@ -51,8 +51,8 @@ class _EditProdukState extends State<EditProduk> {
   @override
   void initState() {
     super.initState();
-    ImageBloc imageBloc = BlocProvider.of<ImageBloc>(context);
-    imageBloc.add(GetImage(widget.detailProduk.image));
+
+    context.read<ImageBloc>().add(GetImage(widget.detailProduk.image));
     setState(() {
       initKategori = {
         'idKategori': widget.detailProduk.idKategori,
@@ -69,18 +69,16 @@ class _EditProdukState extends State<EditProduk> {
 
     return SafeArea(
       child: Scaffold(
-        backgroundColor: backgroundcolor,
         appBar: AppBar(
-          backgroundColor: backgroundcolor,
+          elevation: 1,
           title: const Text(
             'Edit Produk',
-            style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
           ),
+          centerTitle: true,
           leading: // Ensure Scaffold is in context
               IconButton(
                   icon: const Icon(
                     LineIcons.angleLeft,
-                    color: textColor,
                   ),
                   onPressed: () {
                     Navigator.pushReplacement(
@@ -105,12 +103,9 @@ class _EditProdukState extends State<EditProduk> {
                             child: const Text('Tidak'),
                           ),
                           ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor: primaryColor),
                             onPressed: () {
-                              ProdukBloc produk =
-                                  BlocProvider.of<ProdukBloc>(context);
-                              produk
+                              context
+                                  .read<ProdukBloc>()
                                   .add(HapusProduk(id: widget.detailProduk.id));
                               Navigator.pushReplacement(
                                 context,
@@ -129,7 +124,6 @@ class _EditProdukState extends State<EditProduk> {
                 child: Icon(
                   LineIcons.trash,
                   size: 25,
-                  color: textColor,
                 ),
               ),
             )
@@ -175,15 +169,13 @@ class _EditProdukState extends State<EditProduk> {
       child: Row(
         children: [
           Expanded(
-            child: TextButton(
-              style: TextButton.styleFrom(
-                  side: const BorderSide(color: primaryColor, width: 2)),
+            child: OutlinedButton(
               onPressed: () {
                 Navigator.pop(context);
               },
               child: const Text(
                 'Batal',
-                style: TextStyle(color: textColor, fontSize: 16),
+                style: TextStyle(fontSize: 16),
               ),
             ),
           ),
@@ -191,31 +183,32 @@ class _EditProdukState extends State<EditProduk> {
             width: defaultPadding,
           ),
           Expanded(
-            child: TextButton(
-              style: TextButton.styleFrom(backgroundColor: primaryColor),
+            child: ElevatedButton(
+              //style: TextButton.styleFrom(backgroundColor: primaryColor),
               onPressed: () {
-                ProdukBloc produk = BlocProvider.of<ProdukBloc>(context);
+                if (produkForm.currentState!.validate()) {
+                  pic.Image? img = pic.decodeImage(gambar!);
+                  pic.Image resized =
+                      pic.copyResize(img!, width: 200, height: 200);
+                  resizedImg = Uint8List.fromList(pic.encodePng(resized));
+                  if (nameController.text.isNotEmpty &&
+                      pokokController.text.isNotEmpty &&
+                      jualController.text.isNotEmpty) {
+                    context.read<ProdukBloc>().add(UpdateProduk(
+                        id: widget.detailProduk.id,
+                        nama: nameController.text,
+                        hargaPokok: int.parse(pokokController.text),
+                        hargaJual: int.parse(jualController.text),
+                        idKategori: initKategori['idKategori'],
+                        img: resizedImg!));
 
-                pic.Image? img = pic.decodeImage(gambar!);
-                pic.Image resized =
-                    pic.copyResize(img!, width: 200, height: 200);
-                resizedImg = Uint8List.fromList(pic.encodePng(resized));
-                if (nameController.text.isNotEmpty &&
-                    pokokController.text.isNotEmpty &&
-                    jualController.text.isNotEmpty) {
-                  produk.add(UpdateProduk(
-                      id: widget.detailProduk.id,
-                      nama: nameController.text,
-                      hargaPokok: int.parse(pokokController.text),
-                      hargaJual: int.parse(jualController.text),
-                      idKategori: initKategori['idKategori'],
-                      img: resizedImg!));
-                  Navigator.pop(context);
+                    Navigator.pop(context);
+                  }
                 }
               },
               child: const Text(
-                'Save',
-                style: TextStyle(color: textColorInvert, fontSize: 16),
+                'Simpan',
+                style: TextStyle(fontSize: 16),
               ),
             ),
           )
@@ -246,7 +239,7 @@ class _EditProdukState extends State<EditProduk> {
                         BorderRadius.all(Radius.circular(defaultPadding))),
                 builder: (BuildContext context) {
                   return Container(
-                    height: MediaQuery.sizeOf(context).height / 2,
+                    height: MediaQuery.sizeOf(context).height - 200,
                     padding:
                         const EdgeInsets.symmetric(horizontal: defaultPadding),
                     decoration: const BoxDecoration(
@@ -256,16 +249,32 @@ class _EditProdukState extends State<EditProduk> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Padding(
-                          padding: EdgeInsets.all(10),
-                          child: Center(
-                            child: Text(
-                              'Kategori',
-                              style: TextStyle(fontSize: 16, color: textColor),
+                        Row(
+                          children: [
+                            const Spacer(),
+                            const Padding(
+                              padding: EdgeInsets.all(10),
+                              child: Text(
+                                'Kategori',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                ),
+                              ),
                             ),
-                          ),
+                            const Spacer(),
+                            GestureDetector(
+                              onTap: () => Navigator.pop(context),
+                              child: const SizedBox(
+                                height: 30,
+                                width: 30,
+                                child: Icon(LineIcons.times),
+                              ),
+                            )
+                          ],
                         ),
-                        const Divider(),
+                        const SizedBox(
+                          height: defaultPadding * 2,
+                        ),
                         Form(
                           key: kategoriForm,
                           child: Row(
@@ -281,17 +290,10 @@ class _EditProdukState extends State<EditProduk> {
                                   },
                                   textCapitalization:
                                       TextCapitalization.sentences,
-                                  cursorColor: primaryColor,
                                   decoration: const InputDecoration(
-                                      contentPadding: EdgeInsets.zero,
-                                      label: Text('Nama Kategori'),
-                                      labelStyle: TextStyle(color: textColor),
-                                      focusedBorder: UnderlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: primaryColor)),
-                                      enabledBorder: UnderlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: textColor))),
+                                    contentPadding: EdgeInsets.zero,
+                                    label: Text('Nama Kategori'),
+                                  ),
                                 ),
                               ),
                               const SizedBox(
@@ -299,19 +301,23 @@ class _EditProdukState extends State<EditProduk> {
                               ),
                               IconButton(
                                 style: IconButton.styleFrom(
-                                    backgroundColor: primaryColor),
+                                    backgroundColor:
+                                        Theme.of(context).colorScheme.primary),
                                 onPressed: () {
                                   if (kategoriForm.currentState!.validate()) {
-                                    KategoriBloc kategori =
-                                        BlocProvider.of<KategoriBloc>(context);
-                                    kategori.add(TambahKategori(
-                                      name: namaKategori.text,
-                                    ));
+                                    context
+                                        .read<KategoriBloc>()
+                                        .add(TambahKategori(
+                                          name: namaKategori.text,
+                                        ));
+
                                     namaKategori.text = '';
                                   }
                                 },
-                                icon: const Icon(LineIcons.plus),
-                                color: textColorInvert,
+                                icon: const Icon(
+                                  LineIcons.plus,
+                                  color: Colors.white,
+                                ),
                               )
                             ],
                           ),
@@ -355,7 +361,9 @@ class _EditProdukState extends State<EditProduk> {
             children: [
               Text(
                 initKategori['nama'],
-                style: const TextStyle(color: primaryColor),
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                ),
               ),
               const Spacer(),
               const Icon(LineIcons.angleDown)
@@ -378,62 +386,53 @@ class _EditProdukState extends State<EditProduk> {
           });
           Navigator.pop(context);
         },
-        child: Stack(
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(
-                vertical: 5.0,
-                horizontal: 5.0,
-              ),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10.0,
-                  vertical: 10.0,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: primaryColor, width: 2),
-                  borderRadius: BorderRadius.circular(100.0),
-                ),
-                child: Text(
-                  kategori.nama,
-                  style: const TextStyle(
-                    color: textColor,
-                    fontSize: 15.0,
-                  ),
+        child: Container(
+          height: 50,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 10.0,
+            vertical: 10.0,
+          ),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primaryContainer,
+            borderRadius: BorderRadius.circular(100.0),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                kategori.nama,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                  fontSize: 15.0,
                 ),
               ),
-            ),
-            Positioned(
-              right: 0,
-              child: GestureDetector(
+              VerticalDivider(
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
+              ),
+              GestureDetector(
                 onTap: () {
                   context
                       .read<KategoriBloc>()
                       .add(HapusKategori(id: kategori.id));
                 },
-                child: const CircleAvatar(
-                  backgroundColor: Colors.red,
-                  radius: 10.0,
-                  child: Icon(
-                    LineIcons.times,
-                    size: 10.0,
-                    color: Colors.white,
-                  ),
+                child: Icon(
+                  LineIcons.times,
+                  size: 20.0,
+                  color: Theme.of(context).colorScheme.onPrimaryContainer,
                 ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ));
   }
 
-  Widget buildFoto() {
+  Column buildFoto() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
           'Foto',
-          style: TextStyle(color: textColor, fontSize: 14),
+          style: TextStyle(fontSize: 14),
         ),
         const SizedBox(
           height: contentPadding,
@@ -441,7 +440,9 @@ class _EditProdukState extends State<EditProduk> {
         Container(
           //width: double.infinity,
           decoration: BoxDecoration(
-              border: Border.all(color: primaryColor),
+              border: Border.all(
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
+              ),
               borderRadius:
                   const BorderRadius.all(Radius.circular(defaultRadius))),
           child: BlocBuilder<ImageBloc, ImageState>(builder: (context, state) {
@@ -464,6 +465,7 @@ class _EditProdukState extends State<EditProduk> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Material(
+                                  color: Colors.transparent,
                                   child: InkWell(
                                     onTap: () {
                                       Navigator.pop(context);
@@ -473,22 +475,24 @@ class _EditProdukState extends State<EditProduk> {
                                               builder: (_) => const PreviewPage(
                                                   picFrom: 'gal')));
                                     },
-                                    child: const Row(
+                                    child: Row(
                                       children: [
                                         Icon(
                                           LineIcons.image,
                                           size: 50,
-                                          color: primaryColor,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onPrimaryContainer,
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           width: defaultPadding,
                                         ),
-                                        Text(
+                                        const Text(
                                           'Galeri',
                                           style: TextStyle(fontSize: 20),
                                         ),
-                                        Spacer(),
-                                        Icon(LineIcons.angleRight)
+                                        const Spacer(),
+                                        const Icon(LineIcons.angleRight)
                                       ],
                                     ),
                                   ),
@@ -497,6 +501,7 @@ class _EditProdukState extends State<EditProduk> {
                                   height: contentPadding,
                                 ),
                                 Material(
+                                  color: Colors.transparent,
                                   child: InkWell(
                                     onTap: () {
                                       Navigator.pop(context);
@@ -506,22 +511,24 @@ class _EditProdukState extends State<EditProduk> {
                                               builder: (_) => const PreviewPage(
                                                   picFrom: 'cam')));
                                     },
-                                    child: const Row(
+                                    child: Row(
                                       children: [
                                         Icon(
                                           LineIcons.camera,
                                           size: 50,
-                                          color: primaryColor,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onPrimaryContainer,
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           width: defaultPadding,
                                         ),
-                                        Text(
+                                        const Text(
                                           'Kamera',
                                           style: TextStyle(fontSize: 20),
                                         ),
-                                        Spacer(),
-                                        Icon(LineIcons.angleRight)
+                                        const Spacer(),
+                                        const Icon(LineIcons.angleRight)
                                       ],
                                     ),
                                   ),
@@ -543,9 +550,9 @@ class _EditProdukState extends State<EditProduk> {
                         height: 80,
                       ),
                     ),
-                    const Icon(
+                    Icon(
                       LineIcons.camera,
-                      color: primaryColor,
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
                     )
                   ],
                 ),
@@ -563,12 +570,10 @@ class _EditProdukState extends State<EditProduk> {
         children: [
           const Text(
             'Recipe',
-            style: TextStyle(
-                fontSize: 16, fontWeight: FontWeight.bold, color: textColor),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           const Spacer(),
           ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(backgroundColor: primaryColor),
               onPressed: () {
                 Navigator.push(
                     context,
@@ -581,11 +586,9 @@ class _EditProdukState extends State<EditProduk> {
               },
               icon: const Icon(
                 LineIcons.plus,
-                color: textColorInvert,
               ),
               label: const Text(
                 'Tambah Resep',
-                style: TextStyle(color: textColorInvert),
               ))
         ],
       ),

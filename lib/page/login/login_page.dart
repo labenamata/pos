@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:line_icons/line_icons.dart';
 import 'package:pos_app/bloc/cart/cart_bloc.dart';
 import 'package:pos_app/constant.dart';
 import 'package:pos_app/page/login/form_widget.dart';
@@ -30,36 +29,26 @@ class _LoginPageState extends State<LoginPage> {
         return false;
       },
       child: Scaffold(
-        backgroundColor: backgroundcolor,
+        //backgroundColor: backgroundcolor,
         appBar: AppBar(
+            elevation: 1,
             automaticallyImplyLeading: false,
             centerTitle: true,
-            backgroundColor: backgroundcolor,
+            //backgroundColor: backgroundcolor,
             title: const Text(
               'LOGIN',
-              style: TextStyle(color: textColor),
             )),
         body: Container(
           padding: const EdgeInsets.all(defaultPadding),
-          child: const Column(children: [
-            CircleAvatar(
-              backgroundColor: primaryColor,
-              radius: 100,
-              child: Icon(
-                LineIcons.userAlt,
-                size: 70,
-                color: textColorInvert,
-              ),
-            ),
-            SizedBox(
-              height: defaultPadding,
-            ),
-            FormWidget(),
-            SizedBox(
-              height: defaultPadding,
-            ),
-            Text('* User Password Default adalah admin admin')
-          ]),
+          child: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                FormWidget(),
+                SizedBox(
+                  height: defaultPadding,
+                ),
+                Text('* User Password Default adalah admin admin')
+              ]),
         ),
       ),
     );

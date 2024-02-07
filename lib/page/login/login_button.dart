@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pos_app/bloc/login/login_bloc.dart';
-import 'package:pos_app/constant.dart';
 import 'package:pos_app/page/cart/cart_page.dart';
 
 class LoginButton extends StatelessWidget {
@@ -28,8 +27,8 @@ class LoginButton extends StatelessWidget {
           });
           return const Center(child: CircularProgressIndicator());
         }
-        return TextButton(
-          style: TextButton.styleFrom(backgroundColor: primaryColor),
+        return ElevatedButton(
+          //style: TextButton.styleFrom(backgroundColor: primaryColor),
           onPressed: () {
             if (formKey.currentState!.validate()) {
               context.read<LoginBloc>().add(LoginSubmitted());
@@ -37,7 +36,7 @@ class LoginButton extends StatelessWidget {
           },
           child: const Text(
             'Masuk',
-            style: TextStyle(color: textColorInvert),
+            //style: TextStyle(color: textColorInvert),
           ),
         );
       },

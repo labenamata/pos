@@ -17,7 +17,7 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundcolor,
-      drawer: menuDrawer(context),
+      //drawer: menuDrawer(context),
       appBar: AppBar(
         leading: Builder(
           builder: (context) => // Ensure Scaffold is in context

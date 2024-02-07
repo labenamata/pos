@@ -18,7 +18,7 @@ const Color textColorInvert = Colors.white;
 // const Color secondaryColor = Color(0xFFF9F9F9);
 // const Color textColor = Color.fromARGB(255, 87, 84, 84);
 
-const double defaultPadding = 15;
+const double defaultPadding = 20;
 const double defaultRadius = 10;
 const double contentPadding = 10;
 

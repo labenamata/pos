@@ -51,19 +51,16 @@ class _EditRecipeState extends State<EditRecipe> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: backgroundcolor,
         appBar: AppBar(
           elevation: 1,
-          backgroundColor: backgroundcolor,
           title: Text(
             widget.nama,
-            style: const TextStyle(color: textColor),
           ),
+          centerTitle: true,
           leading: // Ensure Scaffold is in context
               IconButton(
                   icon: const Icon(
                     LineIcons.angleLeft,
-                    color: textColor,
                   ),
                   onPressed: () {
                     Navigator.pop(context);
@@ -77,7 +74,6 @@ class _EditRecipeState extends State<EditRecipe> {
                   },
                   icon: const Icon(
                     LineIcons.check,
-                    color: textColor,
                   )),
             )
           ],
@@ -103,15 +99,12 @@ class _EditRecipeState extends State<EditRecipe> {
       ),
       const Text(
         'Recipe :',
-        style: TextStyle(
-            fontSize: 16, fontWeight: FontWeight.bold, color: textColor),
+        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
       ),
       const SizedBox(
         height: contentPadding,
       ),
-      const Divider(
-        color: primaryColor,
-      ),
+      const Divider(),
       const SizedBox(
         height: contentPadding,
       ),
@@ -120,10 +113,7 @@ class _EditRecipeState extends State<EditRecipe> {
           if (state is RecipeLoading) {
             return Container(
               padding: const EdgeInsets.all(defaultPadding),
-              child: const Center(
-                  child: CircularProgressIndicator(
-                backgroundColor: primaryColor,
-              )),
+              child: const Center(child: CircularProgressIndicator()),
             );
           } else {
             RecipeLoaded recipeLoaded = state as RecipeLoaded;
@@ -140,6 +130,22 @@ class _EditRecipeState extends State<EditRecipe> {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
+                      Text(
+                        recipeLoaded.data[index].nama,
+                      ),
+                      const Spacer(),
+                      Text(
+                        recipeLoaded.data[index].usage.toString(),
+                      ),
+                      const SizedBox(
+                        width: defaultPadding,
+                      ),
+                      Text(
+                        recipeLoaded.data[index].satuan,
+                      ),
+                      const SizedBox(
+                        width: defaultPadding,
+                      ),
                       GestureDetector(
                         onTap: () {
                           showDialog(
@@ -155,14 +161,12 @@ class _EditRecipeState extends State<EditRecipe> {
                                         Navigator.pop(context);
                                       },
                                       child: const Text('Tidak')),
-                                  TextButton(
+                                  ElevatedButton(
                                       onPressed: () {
-                                        RecipeBloc recipeBloc =
-                                            BlocProvider.of<RecipeBloc>(
-                                                context);
-                                        recipeBloc.add(HapusRecipe(
-                                            id: recipeLoaded.data[index].id,
-                                            idProduk: widget.idProduk));
+                                        context.read<RecipeBloc>().add(
+                                            HapusRecipe(
+                                                id: recipeLoaded.data[index].id,
+                                                idProduk: widget.idProduk));
                                         Navigator.pop(context);
                                       },
                                       child: const Text('Ya'))
@@ -171,26 +175,10 @@ class _EditRecipeState extends State<EditRecipe> {
                             },
                           );
                         },
-                        child: const Icon(LineIcons.times),
-                      ),
-                      const SizedBox(
-                        width: defaultPadding,
-                      ),
-                      Text(
-                        recipeLoaded.data[index].nama,
-                        style: const TextStyle(color: textColor),
-                      ),
-                      const Spacer(),
-                      Text(
-                        recipeLoaded.data[index].usage.toString(),
-                        style: const TextStyle(color: textColor),
-                      ),
-                      const SizedBox(
-                        width: defaultPadding,
-                      ),
-                      Text(
-                        recipeLoaded.data[index].satuan,
-                        style: const TextStyle(color: textColor),
+                        child: const Icon(
+                          LineIcons.times,
+                          size: 15,
+                        ),
                       ),
                     ],
                   );
@@ -202,7 +190,6 @@ class _EditRecipeState extends State<EditRecipe> {
                 child: const Center(
                   child: Text(
                     'Belum Ada Data',
-                    style: TextStyle(color: textColor),
                   ),
                 ),
               );
@@ -213,386 +200,370 @@ class _EditRecipeState extends State<EditRecipe> {
     ]);
   }
 
-  Row buildBahan() {
-    return Row(children: [
-      Expanded(
-        child: Material(
-          //color: secondaryColor,
-          child: InkWell(
-            splashColor: textColor,
-            onTap: () {
-              bawah.showMaterialModalBottomSheet(
-                expand: false,
-                context: context,
-                backgroundColor: Colors.transparent,
-                builder: (context) {
-                  return buildAddBahan(context);
+  Widget buildBahan() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Row(children: [
+          Expanded(
+            child: Material(
+              child: InkWell(
+                onTap: () {
+                  bawah.showMaterialModalBottomSheet(
+                    expand: false,
+                    context: context,
+                    shape: const RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.all(Radius.circular(defaultPadding))),
+                    builder: (context) {
+                      return buildAddBahan(context);
+                    },
+                  );
                 },
-              );
-            },
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: contentPadding),
-              // decoration: const BoxDecoration(
-              //     border: Border(bottom: BorderSide(color: primaryColor))),
-              child: Row(children: [
-                const Icon(
-                  LineIcons.angleDown,
-                  color: primaryColor,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: contentPadding),
+                  // decoration: const BoxDecoration(
+                  //     border: Border(bottom: BorderSide(color: primaryColor))),
+                  child: Row(children: [
+                    const Icon(
+                      LineIcons.angleDown,
+                    ),
+                    const SizedBox(
+                      width: contentPadding,
+                    ),
+                    idBahan == 0
+                        ? const Text(
+                            'Bahan Baku',
+                            style: TextStyle(fontSize: 20),
+                          )
+                        : Text(
+                            nama,
+                            style: const TextStyle(fontSize: 20),
+                          ),
+                  ]),
                 ),
-                const SizedBox(
-                  width: contentPadding,
-                ),
-                idBahan == 0
-                    ? const Text(
-                        'Cari Bahan Baku',
-                        style: TextStyle(color: textColor, fontSize: 20),
-                      )
-                    : Text(
-                        nama,
-                        style:
-                            const TextStyle(color: primaryColor, fontSize: 20),
-                      ),
-              ]),
+              ),
             ),
           ),
-        ),
-      ),
-      SizedBox(
-        width: 70,
-        child: TextField(
-          focusNode: focusUsage,
-          controller: usageController,
-          cursorColor: primaryColor,
-          keyboardType: TextInputType.number,
-          decoration: InputDecoration(
-              suffixText: satuan,
-              prefixText: ':',
-              //label: const Text('Usage'),
-              labelStyle: const TextStyle(color: primaryColor),
-              contentPadding:
-                  const EdgeInsets.symmetric(vertical: contentPadding),
-              isDense: true,
-              enabledBorder: const UnderlineInputBorder(
-                borderSide: BorderSide(width: 1, color: textColor),
+          SizedBox(
+            width: 70,
+            child: TextField(
+              focusNode: focusUsage,
+              controller: usageController,
+              cursorColor: primaryColor,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                suffixText: satuan,
+                prefixText: ': ',
+                //label: const Text('Usage'),
+
+                contentPadding:
+                    const EdgeInsets.symmetric(vertical: contentPadding),
+                isDense: true,
               ),
-              focusedBorder: const UnderlineInputBorder(
-                borderSide: BorderSide(width: 1, color: primaryColor),
-              )),
+            ),
+          ),
+          const SizedBox(
+            width: defaultPadding,
+          ),
+        ]),
+        const SizedBox(
+          height: defaultPadding,
         ),
-      ),
-      const SizedBox(
-        width: defaultPadding,
-      ),
-      IconButton(
-        style: ElevatedButton.styleFrom(backgroundColor: primaryColor),
-        onPressed: () {
-          RecipeBloc recipeBloc = BlocProvider.of<RecipeBloc>(context);
-          if (idBahan != 0) {
-            if (usageController.text.isNotEmpty) {
-              recipeBloc.add(TambahRecipe(
-                idProduk: widget.idProduk,
-                idBahan: idBahan,
-                usage: double.parse(usageController.text),
-              ));
-              setState(() {
-                idBahan = 0;
-                nama = '';
-                satuan = '';
-              });
+        ElevatedButton(
+          onPressed: () {
+            if (idBahan != 0) {
+              if (usageController.text.isNotEmpty) {
+                context.read<RecipeBloc>().add(TambahRecipe(
+                      idProduk: widget.idProduk,
+                      idBahan: idBahan,
+                      usage: double.parse(usageController.text),
+                    ));
 
-              usageController.text = '';
-              focusUsage.unfocus();
-            } else {
-              focusUsage.requestFocus();
+                setState(() {
+                  idBahan = 0;
+                  nama = '';
+                  satuan = '';
+                });
+
+                usageController.text = '';
+                focusUsage.unfocus();
+              } else {
+                focusUsage.requestFocus();
+              }
             }
-          }
 
-          // Navigator.pop(context);
-        },
-        icon: const Icon(LineIcons.plus),
-      ),
-    ]);
+            // Navigator.pop(context);
+          },
+          child: const Text('Tambah'),
+        ),
+      ],
+    );
   }
 
-  Material buildAddBahan(BuildContext context) {
-    return Material(
-        color: backgroundcolor,
-        child: SafeArea(
-          top: false,
-          child: Container(
-            padding: const EdgeInsets.all(defaultPadding),
-            height: MediaQuery.of(context).size.height * 0.8,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(
-                  height: 60,
-                  child: TextField(
-                    onEditingComplete: () {
-                      BahanBloc produk = BlocProvider.of<BahanBloc>(context);
-                      produk.add(SearchBahan(nama: searchController.text));
-                    },
-                    onChanged: (value) {
-                      if (value.isEmpty) {
-                        BahanBloc produk = BlocProvider.of<BahanBloc>(context);
-                        produk.add(SearchBahan(nama: searchController.text));
-                      }
-                    },
-                    decoration: const InputDecoration(
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: contentPadding),
-                        border: InputBorder.none,
-                        suffixIcon: Icon(
-                          Icons.search_rounded,
-                          color: backgroundcolor,
-                        ),
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(width: 1, color: textColor),
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(width: 1, color: primaryColor),
-                        ),
-                        labelText: 'Nama Bahan',
-                        labelStyle: TextStyle(color: primaryColor)),
-                    controller: searchController,
-                  ),
+  Widget buildAddBahan(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(defaultPadding),
+      height: MediaQuery.of(context).size.height * 0.8,
+      decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(defaultRadius))),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              const Spacer(),
+              GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: const Icon(LineIcons.times),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 60,
+            child: TextField(
+              onEditingComplete: () {
+                context
+                    .read<BahanBloc>()
+                    .add(SearchBahan(nama: searchController.text));
+              },
+              onChanged: (value) {
+                if (value.isEmpty) {
+                  context
+                      .read<BahanBloc>()
+                      .add(SearchBahan(nama: searchController.text));
+                }
+              },
+              decoration: const InputDecoration(
+                contentPadding: EdgeInsets.symmetric(vertical: contentPadding),
+                suffixIcon: Icon(
+                  Icons.search_rounded,
+                  color: backgroundcolor,
                 ),
-                const SizedBox(
-                  height: defaultPadding,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(
-                      height: contentPadding,
-                    ),
-                    const Text(
-                      'Tambah Bahan Baku',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: textColor),
-                    ),
-                    const SizedBox(
-                      height: contentPadding,
-                    ),
-                    const Divider(
-                      color: primaryColor,
-                    ),
-                    Row(children: [
-                      Expanded(
-                        child: TextField(
-                          controller: namaController,
-                          cursorColor: primaryColor,
-                          focusNode: focusNama,
-                          textCapitalization: TextCapitalization.words,
-                          decoration: const InputDecoration(
-                            isDense: true,
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(width: 1, color: textColor),
-                            ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(width: 1, color: primaryColor),
-                            ),
-                            label: Text('Nama Bahan'),
-                            labelStyle:
-                                TextStyle(fontSize: 14, color: textColor),
-                            focusColor: primaryColor,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: defaultPadding,
-                      ),
-                      Expanded(
-                        child: TextField(
-                          controller: satuanController,
-                          cursorColor: primaryColor,
-                          //textCapitalization: TextCapitalization.words,
-                          decoration: const InputDecoration(
-                            isDense: true,
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(width: 1, color: textColor),
-                            ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(width: 1, color: primaryColor),
-                            ),
-                            label: Text('Satuan'),
-                            labelStyle:
-                                TextStyle(fontSize: 14, color: textColor),
-                            focusColor: primaryColor,
-                          ),
-                        ),
-                      ),
-                      IconButton(
-                          onPressed: () {
-                            if (namaController.text.isNotEmpty &&
-                                satuanController.text.isNotEmpty) {
-                              BahanBloc bahan =
-                                  BlocProvider.of<BahanBloc>(context);
-                              bahan.add(TambahBahan(
-                                name: namaController.text,
-                                satuan: satuanController.text,
-                              ));
-                              satuanController.text = '';
-                              namaController.text = '';
-                              focusNama.requestFocus();
-                            }
-                          },
-                          icon: const Icon(Icons.save_rounded),
-                          iconSize: 40,
-                          color: primaryColor,
-                          style: IconButton.styleFrom(
-                              backgroundColor: primaryColor))
-                    ]),
-                  ],
-                ),
-                const SizedBox(
-                  height: defaultPadding,
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      const SizedBox(
-                        height: contentPadding,
-                      ),
-                      const Text(
-                        'Daftar Bahan Baku',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: textColor),
-                      ),
-                      const SizedBox(
-                        height: contentPadding,
-                      ),
-                      const Divider(
-                        color: primaryColor,
-                      ),
-                      BlocBuilder<BahanBloc, BahanState>(
-                          builder: (context, state) {
-                        if (state is BahanLoading) {
-                          return Container(
-                            padding: const EdgeInsets.all(defaultPadding),
-                            child: const Center(
-                                child: CircularProgressIndicator(
-                              backgroundColor: primaryColor,
-                            )),
-                          );
-                        } else {
-                          BahanLoaded bahanLoaded = state as BahanLoaded;
-                          if (bahanLoaded.data.isNotEmpty) {
-                            return Expanded(
-                              child: ListView.separated(
-                                shrinkWrap: true,
-                                padding: EdgeInsets.zero,
-                                itemCount: bahanLoaded.data.length,
-                                separatorBuilder: (context, index) {
-                                  return const Divider(
-                                    color: primaryColor,
-                                  );
-                                },
-                                itemBuilder: (BuildContext context, int index) {
-                                  return Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return AlertDialog(
-                                                title: const Text('Notifikasi'),
-                                                content: const Text(
-                                                    'Yakin Akan Menghapus Data ?'),
-                                                actions: [
-                                                  TextButton(
-                                                      onPressed: () {
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child:
-                                                          const Text('Tidak')),
-                                                  TextButton(
-                                                      onPressed: () {
-                                                        BahanBloc bahan =
-                                                            BlocProvider.of<
-                                                                    BahanBloc>(
-                                                                context);
-                                                        bahan.add(HapusBahan(
-                                                          id: bahanLoaded
-                                                              .data[index].id,
-                                                        ));
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: const Text('Ya'))
-                                                ],
-                                              );
-                                            },
-                                          );
-                                        },
-                                        child: const Icon(
-                                          LineIcons.times,
-                                          color: primaryColor,
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: defaultPadding,
-                                      ),
-                                      Text(
-                                        '${bahanLoaded.data[index].nama} (${bahanLoaded.data[index].satuan})',
-                                        style:
-                                            const TextStyle(color: textColor),
-                                      ),
-                                      const Spacer(),
-                                      IconButton(
-                                        color: primaryColor,
-                                        onPressed: () {
-                                          setState(() {
-                                            idBahan =
-                                                bahanLoaded.data[index].id;
-                                            nama = bahanLoaded.data[index].nama;
-                                            satuan =
-                                                bahanLoaded.data[index].satuan;
-                                          });
-                                          focusUsage.requestFocus();
-                                          Navigator.pop(context);
-                                        },
-                                        icon: const Icon(LineIcons.plus),
-                                      )
-                                    ],
-                                  );
-                                },
-                              ),
-                            );
-                          } else {
-                            return Expanded(
-                              child: Container(
-                                padding: const EdgeInsets.all(defaultPadding),
-                                child: const Center(
-                                  child: Text(
-                                    'Belum Ada Data',
-                                    style: TextStyle(color: textColor),
-                                  ),
-                                ),
-                              ),
-                            );
-                          }
-                        }
-                      }),
-                    ],
-                  ),
-                )
-              ],
+                labelText: 'Nama Bahan',
+              ),
+              controller: searchController,
             ),
           ),
-        ));
+          const SizedBox(
+            height: defaultPadding,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(
+                height: contentPadding,
+              ),
+              const Text(
+                'Tambah Bahan Baku',
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: textColor),
+              ),
+              const SizedBox(
+                height: contentPadding,
+              ),
+              const Divider(
+                color: primaryColor,
+              ),
+              Row(children: [
+                Expanded(
+                  child: TextField(
+                    controller: namaController,
+                    cursorColor: primaryColor,
+                    focusNode: focusNama,
+                    textCapitalization: TextCapitalization.words,
+                    decoration: const InputDecoration(
+                      isDense: true,
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(width: 1, color: textColor),
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(width: 1, color: primaryColor),
+                      ),
+                      label: Text('Nama Bahan'),
+                      labelStyle: TextStyle(fontSize: 14, color: textColor),
+                      focusColor: primaryColor,
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  width: defaultPadding,
+                ),
+                Expanded(
+                  child: TextField(
+                    controller: satuanController,
+                    cursorColor: primaryColor,
+                    //textCapitalization: TextCapitalization.words,
+                    decoration: const InputDecoration(
+                      isDense: true,
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(width: 1, color: textColor),
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(width: 1, color: primaryColor),
+                      ),
+                      label: Text('Satuan'),
+                      labelStyle: TextStyle(fontSize: 14, color: textColor),
+                      focusColor: primaryColor,
+                    ),
+                  ),
+                ),
+                IconButton(
+                    onPressed: () {
+                      if (namaController.text.isNotEmpty &&
+                          satuanController.text.isNotEmpty) {
+                        BahanBloc bahan = BlocProvider.of<BahanBloc>(context);
+                        bahan.add(TambahBahan(
+                          name: namaController.text,
+                          satuan: satuanController.text,
+                        ));
+                        satuanController.text = '';
+                        namaController.text = '';
+                        focusNama.requestFocus();
+                      }
+                    },
+                    icon: const Icon(Icons.save_rounded),
+                    iconSize: 40,
+                    color: primaryColor,
+                    style: IconButton.styleFrom(backgroundColor: primaryColor))
+              ]),
+            ],
+          ),
+          const SizedBox(
+            height: defaultPadding,
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const SizedBox(
+                  height: contentPadding,
+                ),
+                const Text(
+                  'Daftar Bahan Baku',
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: textColor),
+                ),
+                const SizedBox(
+                  height: contentPadding,
+                ),
+                const Divider(
+                  color: primaryColor,
+                ),
+                BlocBuilder<BahanBloc, BahanState>(builder: (context, state) {
+                  if (state is BahanLoading) {
+                    return Container(
+                      padding: const EdgeInsets.all(defaultPadding),
+                      child: const Center(
+                          child: CircularProgressIndicator(
+                        backgroundColor: primaryColor,
+                      )),
+                    );
+                  } else {
+                    BahanLoaded bahanLoaded = state as BahanLoaded;
+                    if (bahanLoaded.data.isNotEmpty) {
+                      return Expanded(
+                        child: ListView.separated(
+                          shrinkWrap: true,
+                          padding: EdgeInsets.zero,
+                          itemCount: bahanLoaded.data.length,
+                          separatorBuilder: (context, index) {
+                            return const Divider(
+                              color: primaryColor,
+                            );
+                          },
+                          itemBuilder: (BuildContext context, int index) {
+                            return Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: const Text('Notifikasi'),
+                                          content: const Text(
+                                              'Yakin Akan Menghapus Data ?'),
+                                          actions: [
+                                            TextButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: const Text('Tidak')),
+                                            TextButton(
+                                                onPressed: () {
+                                                  BahanBloc bahan = BlocProvider
+                                                      .of<BahanBloc>(context);
+                                                  bahan.add(HapusBahan(
+                                                    id: bahanLoaded
+                                                        .data[index].id,
+                                                  ));
+                                                  Navigator.pop(context);
+                                                },
+                                                child: const Text('Ya'))
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  },
+                                  child: const Icon(
+                                    LineIcons.times,
+                                    color: primaryColor,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: defaultPadding,
+                                ),
+                                Text(
+                                  '${bahanLoaded.data[index].nama} (${bahanLoaded.data[index].satuan})',
+                                  style: const TextStyle(color: textColor),
+                                ),
+                                const Spacer(),
+                                IconButton(
+                                  color: primaryColor,
+                                  onPressed: () {
+                                    setState(() {
+                                      idBahan = bahanLoaded.data[index].id;
+                                      nama = bahanLoaded.data[index].nama;
+                                      satuan = bahanLoaded.data[index].satuan;
+                                    });
+                                    focusUsage.requestFocus();
+                                    Navigator.pop(context);
+                                  },
+                                  icon: const Icon(LineIcons.plus),
+                                )
+                              ],
+                            );
+                          },
+                        ),
+                      );
+                    } else {
+                      return Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.all(defaultPadding),
+                          child: const Center(
+                            child: Text(
+                              'Belum Ada Data',
+                              style: TextStyle(color: textColor),
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                  }
+                }),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
   }
 }

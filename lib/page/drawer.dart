@@ -5,48 +5,71 @@ import 'package:pos_app/bloc/cart/cart_bloc.dart';
 import 'package:pos_app/bloc/login/login_bloc.dart';
 import 'package:pos_app/bloc/transaksi/transaksi_bloc.dart';
 import 'package:pos_app/bloc/user/user_bloc.dart';
-import 'package:pos_app/constant.dart';
+import 'package:pos_app/main.dart';
 import 'package:pos_app/page/cart/cart_page.dart';
 import 'package:pos_app/page/login/login_page.dart';
 import 'package:pos_app/page/produk/produk_page.dart';
 import 'package:pos_app/page/report/laporan.dart';
 import 'package:pos_app/page/user/user_page.dart';
 
-Widget menuDrawer(BuildContext context) {
-  return Drawer(
-    backgroundColor: backgroundcolor,
-    child: Column(
-      children: [
-        BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
-          LoginState info = state;
+class SideMenu extends StatefulWidget {
+  const SideMenu({super.key});
 
-          return UserAccountsDrawerHeader(
-              decoration: const BoxDecoration(color: primaryColor),
-              currentAccountPicture: const CircleAvatar(
-                child: Icon(
-                  LineIcons.user,
-                  color: textColorInvert,
-                  size: 50,
-                ),
-              ),
-              accountName: Text(
-                info.nama,
-                style: const TextStyle(color: textColorInvert),
-              ),
-              accountEmail: Text(
-                info.status,
-                style: const TextStyle(color: textColorInvert),
-              ));
-        }),
+  @override
+  State<SideMenu> createState() => _SideMenuState();
+}
+
+class _SideMenuState extends State<SideMenu> {
+  bool _value = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return NavigationDrawer(
+      //backgroundColor: backgroundcolor,
+      children: [
+        // BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
+        //   LoginState info = state;
+        //   return UserAccountsDrawerHeader(
+        //       currentAccountPicture: const CircleAvatar(
+        //         child: Icon(
+        //           LineIcons.user,
+        //           size: 50,
+        //         ),
+        //       ),
+        //       accountName: Text(
+        //         info.nama,
+        //       ),
+        //       accountEmail: Text(
+        //         info.status,
+        //       ));
+        // }),
+        // Row(
+        //   children: [
+        //     const Text('Dark Mode'),
+        //     const Spacer(),
+        //     Switch(
+        //       value: _value,
+        //       onChanged: (value) {
+        //         setState(() {
+        //           _value = value;
+        //           if (_value) {
+        //             MyApp.of(context)!.changeTheme(ThemeMode.dark);
+        //           } else {
+        //             MyApp.of(context)!.changeTheme(ThemeMode.light);
+        //           }
+        //         });
+        //       },
+        //     ),
+        //   ],
+        // ),
+
         ListTile(
           leading: const Icon(
             LineIcons.listOl,
             size: 30,
-            color: primaryColor,
           ),
           title: const Text(
             'Produk',
-            style: TextStyle(color: textColor, fontSize: 14),
           ),
           onTap: () {
             Navigator.pop(context);
@@ -54,18 +77,15 @@ Widget menuDrawer(BuildContext context) {
               context,
               MaterialPageRoute(builder: (context) => const ProdukPage()),
             );
-            //Scaffold.of(context).closeEndDrawer();
           },
         ),
         ListTile(
           leading: const Icon(
             LineIcons.shoppingCart,
             size: 30,
-            color: primaryColor,
           ),
           title: const Text(
             'Transaksi',
-            style: TextStyle(color: textColor, fontSize: 14),
           ),
           onTap: () {
             context.read<CartBloc>().add(EmptyCart());
@@ -97,11 +117,11 @@ Widget menuDrawer(BuildContext context) {
           leading: const Icon(
             LineIcons.fileAlt,
             size: 30,
-            color: primaryColor,
+            //color: primaryColor,
           ),
           title: const Text(
             'Laporan',
-            style: TextStyle(color: textColor, fontSize: 14),
+            //style: TextStyle(color: textColor, fontSize: 14),
           ),
         ),
         ListTile(
@@ -116,33 +136,29 @@ Widget menuDrawer(BuildContext context) {
           leading: const Icon(
             LineIcons.userCircle,
             size: 30,
-            color: primaryColor,
+            //color: primaryColor,
           ),
           title: const Text(
             'User',
-            style: TextStyle(color: textColor, fontSize: 14),
+            //style: TextStyle(color: textColor, fontSize: 14),
           ),
         ),
-        const Spacer(),
+        // const Spacer(),
         TextButton(
-          style: TextButton.styleFrom(
-              backgroundColor: primaryColor,
-              textStyle: const TextStyle(color: Colors.white)),
           onPressed: () {
             context.read<LoginBloc>().add(Logout());
-            Future.delayed(const Duration(seconds: 2), () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const LoginPage()),
-              );
-            });
+
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const LoginPage()),
+            );
           },
           child: const Text(
             'Log Out',
-            style: TextStyle(color: textColorInvert, fontSize: 12),
+            style: TextStyle(fontSize: 14),
           ),
         )
       ],
-    ),
-  );
+    );
+  }
 }

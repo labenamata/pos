@@ -12,10 +12,10 @@ import 'package:pos_app/bloc/produk/produk_bloc.dart';
 import 'package:pos_app/bloc/recipe/recipe_bloc.dart';
 import 'package:pos_app/bloc/transaksi/transaksi_bloc.dart';
 import 'package:pos_app/bloc/user/user_bloc.dart';
-import 'package:pos_app/constant.dart';
 // ignore: depend_on_referenced_packages
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:pos_app/page/splash_screen.dart';
+import 'package:pos_app/theme.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,10 +23,26 @@ void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+  @override
+  State<MyApp> createState() => _MyAppState();
+
+  // ignore: library_private_types_in_public_api
+  static _MyAppState? of(BuildContext context) =>
+      context.findAncestorStateOfType<_MyAppState>();
+}
+
+class _MyAppState extends State<MyApp> {
+  ThemeMode _themeMode = ThemeMode.light;
+
+  void changeTheme(ThemeMode themeMode) {
+    setState(() {
+      _themeMode = themeMode;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -57,13 +73,23 @@ class MyApp extends StatelessWidget {
         ],
         child: SafeArea(
           child: MaterialApp(
-            title: 'POS Application',
+            title: 'Resto POS',
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
-                primaryColor: primaryColor,
-                useMaterial3: true,
-                fontFamily: GoogleFonts.poppins().fontFamily),
-            home: const SplashScreen(),
+              useMaterial3: true,
+              fontFamily: GoogleFonts.poppins().fontFamily,
+              colorSchemeSeed: const Color.fromARGB(255, 2, 134, 46),
+              brightness: Brightness.light,
+            ),
+            darkTheme: ThemeData(
+              useMaterial3: true,
+              fontFamily: GoogleFonts.poppins().fontFamily,
+              colorSchemeSeed: const Color.fromARGB(255, 2, 134, 46),
+              brightness: Brightness.dark,
+            ),
+            themeMode: ThemeMode.dark,
+            // ignore: prefer_const_constructors
+            home: SplashScreen(),
             localizationsDelegates: const [
               GlobalWidgetsLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,
