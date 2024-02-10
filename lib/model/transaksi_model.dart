@@ -1,3 +1,4 @@
+import 'package:pos_app/database/cart_base.dart';
 import 'package:pos_app/database/detail_base.dart';
 import 'package:pos_app/database/produk_base.dart';
 import 'package:pos_app/database/transaksi_base.dart';
@@ -51,6 +52,7 @@ class Transaksi {
       String sql =
           'SELECT * FROM ${DetailQueri.tableName} WHERE idTransaksi = ${item['id']}';
       var cariTransaksi = await helper.rawData(sql);
+      print(cariTransaksi.length);
       listTransaksi.add(ListTransaksi.fromJson(item, cariTransaksi));
     }
 
@@ -90,7 +92,7 @@ class Transaksi {
   static addTransaksi(Map<String, dynamic> data) async {
     DBHelper helper = DBHelper();
     int insertId = await helper.insert(TransaksiQueri.tableName, data);
-    var detail = await helper.getData(DetailQueri.tableName);
+    var detail = await helper.getData(CartQueri.tableName);
 
     for (var element in detail) {
       Map<String, dynamic> inserData = {
@@ -121,6 +123,7 @@ class DetailTransaksi {
   int idTransaksi;
   int idProduk;
   String nama;
+
   int harga;
   int jumlah;
   int total;
@@ -154,6 +157,8 @@ class ListTransaksi {
   int tahun;
   String jam;
   String an;
+  String meja;
+  String kasir;
   int total;
   String status;
   String pembayaran;
@@ -168,6 +173,8 @@ class ListTransaksi {
     required this.tahun,
     required this.jam,
     required this.an,
+    required this.meja,
+    required this.kasir,
     required this.total,
     required this.status,
     required this.pembayaran,
@@ -185,6 +192,8 @@ class ListTransaksi {
       tahun: json['tahun'],
       jam: json['jam'],
       an: json['an'],
+      meja: json['meja'] ?? '',
+      kasir: json['kasir'] ?? '',
       total: json['total'],
       status: json['status'],
       pembayaran: json['pembayaran'],

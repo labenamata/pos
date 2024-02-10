@@ -1,28 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pos_app/bloc/transaksi/transaksi_bloc.dart';
+import 'package:pos_app/page/transaksi/komponen/date_select.dart';
 import 'package:pos_app/page/transaksi/komponen/list_pesanan.dart';
-import 'package:pos_app/page/transaksi/komponen/search_pesanan.dart';
+import 'package:pos_app/page/transaksi/komponen/total_transaksi.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-class TransaksiPending extends StatefulWidget {
-  const TransaksiPending({super.key});
+class TransaksiFinish extends StatefulWidget {
+  const TransaksiFinish({super.key});
 
   @override
-  State<TransaksiPending> createState() => _TransaksiPendingState();
+  State<TransaksiFinish> createState() => _TransaksiFinishState();
 }
 
-class _TransaksiPendingState extends State<TransaksiPending> {
+class _TransaksiFinishState extends State<TransaksiFinish> {
   @override
   void initState() {
     super.initState();
-    context.read<TransaksiBloc>().add(GetTransaksi(status: 'pending'));
+    context.read<TransaksiBloc>().add(GetTransaksi(
+        tanggal: DateTime.now().day,
+        bulan: DateTime.now().month,
+        tahun: DateTime.now().year,
+        status: 'finish'));
   }
 
   @override
   Widget build(BuildContext context) {
     return VStack([
-      const SearchPesanan(),
+      const DateSelect(),
       BlocBuilder<TransaksiBloc, TransaksiState>(builder: (context, state) {
         if (state is TransaksiLoading) {
           return const Expanded(
@@ -38,7 +43,14 @@ class _TransaksiPendingState extends State<TransaksiPending> {
               child: Text('Belum Ada Transaksi'),
             ));
           } else {
-            return ListPesanan(dataTransaksi: transaksiLoaded.data);
+            return Expanded(
+              child: VStack(
+                [
+                  TotalTransaksi(dataTransaksi: transaksiLoaded.data),
+                  ListPesanan(dataTransaksi: transaksiLoaded.data),
+                ],
+              ),
+            );
           }
         }
       })

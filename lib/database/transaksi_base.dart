@@ -8,6 +8,8 @@ class TransaksiQueri {
       'jam TEXT,'
       'an TEXT,'
       'total INTEGER,'
+      'meja TEXT,'
+      'kasir TEXT,'
       'status TEXT,'
       'pembayaran TEXT,'
       'bayar INTEGER,'

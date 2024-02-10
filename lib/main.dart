@@ -15,7 +15,7 @@ import 'package:pos_app/bloc/user/user_bloc.dart';
 // ignore: depend_on_referenced_packages
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:pos_app/page/splash_screen.dart';
-import 'package:pos_app/theme.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,14 +35,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  ThemeMode _themeMode = ThemeMode.light;
-
-  void changeTheme(ThemeMode themeMode) {
-    setState(() {
-      _themeMode = themeMode;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -78,16 +70,16 @@ class _MyAppState extends State<MyApp> {
             theme: ThemeData(
               useMaterial3: true,
               fontFamily: GoogleFonts.poppins().fontFamily,
-              colorSchemeSeed: const Color.fromARGB(255, 2, 134, 46),
+              colorSchemeSeed: Vx.hexToColor('B0D9B1'),
               brightness: Brightness.light,
             ),
             darkTheme: ThemeData(
               useMaterial3: true,
               fontFamily: GoogleFonts.poppins().fontFamily,
-              colorSchemeSeed: const Color.fromARGB(255, 2, 134, 46),
+              colorSchemeSeed: const Color(0xFF2D3250),
               brightness: Brightness.dark,
             ),
-            themeMode: ThemeMode.dark,
+            themeMode: ThemeMode.light,
             // ignore: prefer_const_constructors
             home: SplashScreen(),
             localizationsDelegates: const [

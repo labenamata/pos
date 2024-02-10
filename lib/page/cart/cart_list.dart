@@ -129,111 +129,128 @@ Widget produkTile(
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(
-                    height: 8,
+                    height: 5,
                   ),
                   Text(
                     formatter.format(detailData.harga),
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(
-                    height: 8,
+                    height: 5,
                   ),
                   Text(
                     'Stok : ',
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const Spacer(),
-                  Container(
-                    width: 150,
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                            color: Theme.of(context).colorScheme.primary),
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(15))),
-                    child: Row(
-                      children: [
-                        Material(
-                          borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(15),
-                              bottomLeft: Radius.circular(15)),
-                          color: Theme.of(context).colorScheme.primary,
-                          child: InkWell(
+                  Row(
+                    children: [
+                      Spacer(),
+                      Container(
+                        width: 120,
+                        height: 30,
+                        decoration: const BoxDecoration(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(15))),
+                        child: Row(
+                          children: [
+                            Material(
                               borderRadius: const BorderRadius.only(
                                   topLeft: Radius.circular(15),
                                   bottomLeft: Radius.circular(15)),
-                              onTap: () {
-                                int jml = detailData.jumlah - 1;
-                                int ttl = jml * detailData.harga;
+                              color: Theme.of(context).colorScheme.primary,
+                              child: InkWell(
+                                  borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(15),
+                                      bottomLeft: Radius.circular(15)),
+                                  onTap: () {
+                                    int jml = detailData.jumlah - 1;
+                                    int ttl = jml * detailData.harga;
 
-                                CartBloc cart =
-                                    BlocProvider.of<CartBloc>(context);
+                                    CartBloc cart =
+                                        BlocProvider.of<CartBloc>(context);
 
-                                cart.add(TambahCart(
-                                    status: 'minus',
-                                    idProduk: detailData.id,
-                                    harga: detailData.harga,
-                                    nama: detailData.nama,
-                                    jumlah: jml > 0 ? jml : 0,
-                                    total: jml > 0 ? ttl : 0,
-                                    idx: idx));
-                              },
-                              // ignore: prefer_const_constructors
-                              child: SizedBox(
-                                width: 40,
+                                    cart.add(TambahCart(
+                                        status: 'minus',
+                                        idProduk: detailData.id,
+                                        harga: detailData.harga,
+                                        nama: detailData.nama,
+                                        jumlah: jml > 0 ? jml : 0,
+                                        total: jml > 0 ? ttl : 0,
+                                        idx: idx));
+                                  },
+                                  // ignore: prefer_const_constructors
+                                  child: SizedBox(
+                                    width: 40,
+                                    height: 30,
+                                    child: Icon(
+                                      LineIcons.minus,
+                                      size: 20,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimary,
+                                      //color: Colors.white,
+                                    ),
+                                  )),
+                            ),
+                            //const Spacer(),
+                            Expanded(
+                              child: Container(
                                 height: 30,
-                                child: Icon(
-                                  LineIcons.minus,
-                                  size: 20,
-                                  color:
-                                      Theme.of(context).colorScheme.onPrimary,
-                                  //color: Colors.white,
+                                decoration: BoxDecoration(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onPrimary),
+                                child: Center(
+                                  child: Text(
+                                    detailData.jumlah.toString(),
+                                    //style: Theme.of(context).textTheme.titleMedium,
+                                  ),
                                 ),
-                              )),
-                        ),
-                        const Spacer(),
-                        Text(
-                          detailData.jumlah.toString(),
-                          //style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        const Spacer(),
-                        Material(
-                          borderRadius: const BorderRadius.only(
-                              topRight: Radius.circular(15),
-                              bottomRight: Radius.circular(15)),
-                          color: Theme.of(context).colorScheme.primary,
-                          child: InkWell(
+                              ),
+                            ),
+                            //const Spacer(),
+                            Material(
                               borderRadius: const BorderRadius.only(
                                   topRight: Radius.circular(15),
                                   bottomRight: Radius.circular(15)),
-                              onTap: () {
-                                int jml = detailData.jumlah + 1;
-                                int ttl = jml * detailData.harga;
+                              color: Theme.of(context).colorScheme.primary,
+                              child: InkWell(
+                                  borderRadius: const BorderRadius.only(
+                                      topRight: Radius.circular(15),
+                                      bottomRight: Radius.circular(15)),
+                                  onTap: () {
+                                    int jml = detailData.jumlah + 1;
+                                    int ttl = jml * detailData.harga;
 
-                                CartBloc cart =
-                                    BlocProvider.of<CartBloc>(context);
-                                cart.add(TambahCart(
-                                    status: 'plus',
-                                    idProduk: detailData.id,
-                                    harga: detailData.harga,
-                                    nama: detailData.nama,
-                                    jumlah: jml,
-                                    total: ttl,
-                                    idx: idx));
-                              },
-                              // ignore: prefer_const_constructors
-                              child: SizedBox(
-                                width: 40,
-                                height: 30,
-                                child: Icon(
-                                  LineIcons.plus,
-                                  size: 16,
-                                  color:
-                                      Theme.of(context).colorScheme.onPrimary,
-                                ),
-                              )),
-                        )
-                      ],
-                    ),
+                                    CartBloc cart =
+                                        BlocProvider.of<CartBloc>(context);
+                                    cart.add(TambahCart(
+                                        status: 'plus',
+                                        idProduk: detailData.id,
+                                        harga: detailData.harga,
+                                        nama: detailData.nama,
+                                        jumlah: jml,
+                                        total: ttl,
+                                        idx: idx));
+                                  },
+                                  // ignore: prefer_const_constructors
+                                  child: SizedBox(
+                                    width: 40,
+                                    height: 30,
+                                    child: Icon(
+                                      LineIcons.plus,
+                                      size: 16,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimary,
+                                    ),
+                                  )),
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
                   )
                 ],
               ),

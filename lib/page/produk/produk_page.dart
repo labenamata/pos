@@ -7,6 +7,7 @@ import 'package:pos_app/constant.dart';
 import 'package:pos_app/page/produk/add_produk.dart';
 import 'package:pos_app/widget/kategori_filter.dart';
 import 'package:pos_app/page/produk/list_produk.dart';
+import 'package:pos_app/widget/navigation_bar.dart';
 import 'package:pos_app/widget/search_menu.dart';
 
 class ProdukPage extends StatefulWidget {
@@ -40,6 +41,9 @@ class _ProdukPageState extends State<ProdukPage> {
                 FilledButton(onPressed: () {}, child: const Text('Kategori')),
           )
         ],
+      ),
+      bottomNavigationBar: const NavMenu(
+        pageIndex: 1,
       ),
       body: Container(
         padding: const EdgeInsets.all(defaultPadding),
