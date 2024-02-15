@@ -7,6 +7,7 @@ import 'package:pos_app/bloc/konfirmasi/konfirmasi_bloc.dart';
 import 'package:pos_app/bloc/transaksi/transaksi_bloc.dart';
 import 'package:pos_app/constant.dart';
 import 'package:pos_app/page/cart/cart_page.dart';
+import 'package:pos_app/page/transaksi/transaksi_page.dart';
 
 const List<String> list = <String>['Qris', 'Gopay', 'Dana', 'Kartu', 'Lainnya'];
 
@@ -162,7 +163,7 @@ class _BayarNonState extends State<BayarNon> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const CartPage()),
+                              builder: (context) => const TransaksiPage()),
                         );
                       });
                     }

@@ -52,7 +52,6 @@ class Transaksi {
       String sql =
           'SELECT * FROM ${DetailQueri.tableName} WHERE idTransaksi = ${item['id']}';
       var cariTransaksi = await helper.rawData(sql);
-      print(cariTransaksi.length);
       listTransaksi.add(ListTransaksi.fromJson(item, cariTransaksi));
     }
 
@@ -197,8 +196,8 @@ class ListTransaksi {
       total: json['total'],
       status: json['status'],
       pembayaran: json['pembayaran'],
-      bayar: json['bayar'],
-      kembali: json['kembali'],
+      bayar: json['bayar'] ?? 0,
+      kembali: json['kembali'] ?? 0,
       detailTransaksi:
           detail.map((item) => DetailTransaksi.fromJson(item)).toList(),
     );

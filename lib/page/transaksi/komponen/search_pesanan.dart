@@ -7,8 +7,8 @@ class SearchPesanan extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var capsuleColor = Theme.of(context).colorScheme.secondaryContainer;
-    var capsuleTextColor = Theme.of(context).colorScheme.onSecondaryContainer;
+    var capsuleColor = Theme.of(context).colorScheme.surfaceVariant;
+    var capsuleTextColor = Theme.of(context).colorScheme.onSurfaceVariant;
     return HStack(
       [
         Expanded(

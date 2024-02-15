@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pos_app/bloc/login/login_bloc.dart';
 import 'package:pos_app/page/cart/cart_page.dart';
+import 'package:pos_app/page/transaksi/transaksi_page.dart';
 
 class LoginButton extends StatelessWidget {
   const LoginButton({Key? key, required this.formKey}) : super(key: key);
@@ -22,7 +23,7 @@ class LoginButton extends StatelessWidget {
           Future.delayed(const Duration(seconds: 2), () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => const CartPage()),
+              MaterialPageRoute(builder: (context) => const TransaksiPage()),
             );
           });
           return const Center(child: CircularProgressIndicator());

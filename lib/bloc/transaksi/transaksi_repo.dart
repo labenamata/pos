@@ -17,6 +17,6 @@ Future<FutureOr<void>> _simpanTransaksi(
   Transaksi transaksi;
   emit(TransaksiLoading());
   await Transaksi.addTransaksi(event.dataTransaksi);
-  transaksi = await Transaksi.getData(status: 'finish');
+  transaksi = await Transaksi.getData(status: 'pending');
   emit(TransaksiLoaded(transaksi));
 }

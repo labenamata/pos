@@ -43,7 +43,7 @@ class _DateSelectState extends State<DateSelect> {
         [
           const Text('Tanggal')
               .text
-              .color(Theme.of(context).colorScheme.secondary)
+              .color(Theme.of(context).colorScheme.onSurfaceVariant)
               .make(),
           Text(formatDate.format(selectedDate.toLocal())).text.bold.xl.make(),
         ],
@@ -58,8 +58,8 @@ class _DateSelectState extends State<DateSelect> {
             LineIcons.calendar,
             size: 30,
           ))
-    ]).p24())
-        .color(Theme.of(context).colorScheme.secondaryContainer)
+    ]).p12())
+        .color(Theme.of(context).colorScheme.surfaceVariant)
         .rounded
         .make()
         .pOnly(top: 24, left: 24, right: 24);

@@ -31,8 +31,7 @@ class ListPesanan extends StatelessWidget {
   Widget build(BuildContext context) {
     var primColor = Theme.of(context).colorScheme.primary;
     var secondColor = Theme.of(context).colorScheme.secondary;
-    var primaryContainerColor =
-        Theme.of(context).colorScheme.secondaryContainer;
+    var primaryContainerColor = Theme.of(context).colorScheme.surfaceVariant;
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.all(Vx.dp24),
@@ -101,7 +100,7 @@ class ListPesanan extends StatelessWidget {
                           .xl2
                           .bold
                           .make(),
-                      Text('${dataTransaksi.transaksiList[index].detailTransaksi.length} Item')
+                      Text('${dataTransaksi.transaksiList[index].detailTransaksi.fold(0, (p, e) => p + e.jumlah)} Item')
                           .text
                           .color(secondColor)
                           .make(),

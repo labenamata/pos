@@ -30,6 +30,7 @@ environment:
 dependencies:
   avatar_view: ^1.0.1
   camera: ^0.10.5+7
+  colorful_safe_area: ^1.0.0
   cupertino_icons: ^1.0.2
   easy_date_timeline: ^1.0.0
   easy_search_bar: ^2.5.0

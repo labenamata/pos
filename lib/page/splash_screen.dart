@@ -10,6 +10,7 @@ import 'package:pos_app/database/transaksi_base.dart';
 import 'package:pos_app/database/user_base.dart';
 import 'package:pos_app/page/cart/cart_page.dart';
 import 'package:pos_app/page/login/login_page.dart';
+import 'package:pos_app/page/transaksi/transaksi_page.dart';
 import 'package:sqflite/sqflite.dart' as sqlite;
 import 'package:sqflite/sqlite_api.dart';
 import 'package:path/path.dart' as path;
@@ -95,7 +96,7 @@ class _SplashScreenState extends State<SplashScreen> {
         isFinish = true;
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const CartPage()),
+          MaterialPageRoute(builder: (context) => const TransaksiPage()),
         );
       });
     });

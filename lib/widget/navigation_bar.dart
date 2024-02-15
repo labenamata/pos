@@ -41,7 +41,7 @@ class _NavMenuState extends State<NavMenu> {
             );
             break;
           case 2:
-            Navigator.push(
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const TransaksiPage()),
             );

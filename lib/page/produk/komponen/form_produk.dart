@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:pos_app/constant.dart';
-import 'package:pos_app/page/produk/komponen/form_field.dart';
+import 'package:pos_app/widget/form_field.dart';
 
 class FormProduk extends StatelessWidget {
   const FormProduk({

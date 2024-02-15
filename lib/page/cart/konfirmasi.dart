@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:pos_app/page/cart/komponen/simpan_dialog.dart';
+import 'package:velocity_x/velocity_x.dart';
+
 import 'package:pos_app/bloc/cart/cart_bloc.dart';
 import 'package:pos_app/bloc/konfirmasi/konfirmasi_bloc.dart';
 import 'package:pos_app/constant.dart';
@@ -14,144 +17,164 @@ class Konfirmasi extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var containerColor = Theme.of(context).colorScheme.surfaceVariant;
+    var teksColor = Theme.of(context).colorScheme.onSurfaceVariant;
     return Scaffold(
-      backgroundColor: backgroundcolor,
-      floatingActionButtonLocation: ExpandableFab.location,
-      floatingActionButton: ExpandableFab(
-        type: ExpandableFabType.up,
-        openButtonBuilder: RotateFloatingActionButtonBuilder(
-          child: const Text('Bayar'),
-          fabSize: ExpandableFabSize.regular,
-          foregroundColor: textColorInvert,
-          backgroundColor: primaryColor,
-          //shape: const CircleBorder(),
-        ),
-        closeButtonBuilder: FloatingActionButtonBuilder(
-          size: 56,
-          builder: (BuildContext context, void Function()? onPressed,
-              Animation<double> progress) {
-            return IconButton(
-              onPressed: onPressed,
-              icon: const Icon(
-                LineIcons.timesCircleAlt,
-                color: primaryColor,
-                size: 40,
-              ),
-            );
-          },
-        ),
-        children: [
-          navButton(
-              fungsi: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const BayarTunai()),
-                  ),
-              icon: LineIcons.moneyBill,
-              label: 'Tunai',
-              warna: Colors.green),
-          navButton(
-              fungsi: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const BayarNon()),
-                  ),
-              icon: LineIcons.simCard,
-              label: 'Non Tunai',
-              warna: Colors.orange),
-          navButton(
-              icon: LineIcons.shoppingBag, label: 'Nanti', warna: primaryColor),
-        ],
-      ),
       appBar: AppBar(
-        backgroundColor: backgroundcolor,
-        elevation: 0,
+        elevation: 1,
         title: const Text(
           'Konfirmasi',
-          style: TextStyle(color: textColor),
         ),
-        leading: Builder(builder: (context) {
+        leading: Builder(builder: (BuildContext context) {
           return IconButton(
               icon: const Icon(
-                LineIcons.angleLeft,
-                color: textColor,
+                LineIcons.arrowLeft,
               ),
               onPressed: () {
-                CartBloc cart = BlocProvider.of<CartBloc>(context);
-                cart.add(GetCart());
+                context.read<CartBloc>().add(GetCart());
+
                 Navigator.pop(context);
               });
         }),
       ),
-      body: Container(
-          padding: const EdgeInsets.all(defaultPadding),
-          child: BlocBuilder<KonfirmasiBloc, KonfirmasiState>(
-              builder: (context, state) {
-            if (state is KonfirmasiLoading) {
-              return const Center(
-                child: CircularProgressIndicator(color: primaryColor),
-              );
-            }
-            KonfirmasiLoaded konfirmasiLoaded = state as KonfirmasiLoaded;
-            if (konfirmasiLoaded.data.totalTransaksi == 0) {
-              return const Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Icon(
-                      LineIcons.excelFile,
-                      size: 100,
-                    ),
-                    Text('Belum Ada Transaksi')
-                  ],
+      body: BlocBuilder<KonfirmasiBloc, KonfirmasiState>(
+          builder: (context, state) {
+        if (state is KonfirmasiLoading) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        KonfirmasiLoaded konfirmasiLoaded = state as KonfirmasiLoaded;
+        if (konfirmasiLoaded.data.totalTransaksi == 0) {
+          return const Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  LineIcons.excelFile,
+                  size: 100,
                 ),
-              );
-            } else {
-              return Column(
-                children: [
-                  Container(
-                    height: 80,
-                    padding: const EdgeInsets.all(defaultPadding),
-                    decoration: const BoxDecoration(
-                        color: primaryColor,
-                        borderRadius:
-                            BorderRadius.all(Radius.circular(defaultRadius))),
-                    child: Row(children: [
-                      const Text(
-                        'Total',
-                        style: TextStyle(color: textColorInvert, fontSize: 20),
-                      ),
-                      const Spacer(),
-                      Text(
-                        formatter.format(konfirmasiLoaded.data.totalTransaksi),
-                        style: const TextStyle(
-                            color: textColorInvert, fontSize: 20),
-                      ),
-                    ]),
+                Text('Belum Ada Transaksi')
+              ],
+            ),
+          );
+        } else {
+          return VStack(
+            [
+              Expanded(
+                child: VxBox(
+                  child: ListView.separated(
+                    separatorBuilder: (context, index) {
+                      return const Divider();
+                    },
+                    itemCount: konfirmasiLoaded.data.cart.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return produkTile(
+                          idx: index,
+                          detailData: konfirmasiLoaded.data.cart[index],
+                          context: context);
+                    },
                   ),
-                  const SizedBox(
-                    height: defaultPadding,
-                  ),
-                  Expanded(
-                    child: ListView.separated(
-                      separatorBuilder: (context, index) {
-                        return const Divider(
-                          color: primaryColor,
-                          thickness: 2,
-                        );
-                      },
-                      itemCount: konfirmasiLoaded.data.cart.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return produkTile(
-                            idx: index,
-                            detailData: konfirmasiLoaded.data.cart[index],
-                            context: context);
-                      },
-                    ),
-                  ),
-                ],
-              );
-            }
-          })),
+                ).rounded.color(containerColor).p16.make().p24(),
+              ),
+              VxBox(
+                child: HStack([
+                  const Text(
+                    'Total',
+                  ).text.xl.color(teksColor).bold.make(),
+                  const Spacer(),
+                  Text(
+                    formatter.format(konfirmasiLoaded.data.totalTransaksi),
+                  ).text.xl.color(teksColor).bold.make(),
+                ]),
+              )
+                  .rounded
+                  .color(containerColor)
+                  .p16
+                  .make()
+                  .pOnly(bottom: 24, left: 24, right: 24),
+              HStack([
+                Expanded(
+                    child: ElevatedButton.icon(
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return SimpanDialog(
+                                  totalTransaksi:
+                                      konfirmasiLoaded.data.totalTransaksi,
+                                );
+                              });
+                        },
+                        icon: const Icon(LineIcons.check),
+                        label: const Text('Simpan'))),
+              ]).pOnly(left: 24, right: 24, bottom: 16),
+              HStack([
+                Expanded(
+                    child: ElevatedButton.icon(
+                        onPressed: () {},
+                        icon: const Icon(LineIcons.doubleCheck),
+                        label: const Text('Simpan Dan Bayar')))
+              ]).pOnly(left: 24, right: 24, bottom: 24)
+            ],
+          );
+        }
+      }),
+    );
+  }
+}
+
+class NewWidget extends StatelessWidget {
+  const NewWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ExpandableFab(
+      type: ExpandableFabType.up,
+      openButtonBuilder: RotateFloatingActionButtonBuilder(
+        child: const Text('Bayar'),
+        fabSize: ExpandableFabSize.regular,
+        foregroundColor: textColorInvert,
+        backgroundColor: primaryColor,
+        //shape: const CircleBorder(),
+      ),
+      closeButtonBuilder: FloatingActionButtonBuilder(
+        size: 56,
+        builder: (BuildContext context, void Function()? onPressed,
+            Animation<double> progress) {
+          return IconButton(
+            onPressed: onPressed,
+            icon: const Icon(
+              LineIcons.timesCircleAlt,
+              color: primaryColor,
+              size: 40,
+            ),
+          );
+        },
+      ),
+      children: [
+        navButton(
+            fungsi: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const BayarTunai()),
+                ),
+            icon: LineIcons.moneyBill,
+            label: 'Tunai',
+            warna: Colors.green),
+        navButton(
+            fungsi: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const BayarNon()),
+                ),
+            icon: LineIcons.simCard,
+            label: 'Non Tunai',
+            warna: Colors.orange),
+        navButton(
+            icon: LineIcons.shoppingBag, label: 'Nanti', warna: primaryColor),
+      ],
     );
   }
 }
@@ -195,35 +218,25 @@ Widget produkTile(
     {required int idx,
     required ListCart detailData,
     required BuildContext context}) {
-  return Row(
-    children: [
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+  return HStack(
+    [
+      VStack(
+        [
           Text(
             detailData.nama,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-          Row(
-            children: [
-              IconButton(
-                  //style: IconButton.styleFrom(backgroundColor: primaryColor),
-                  //constraints: BoxConstraints(maxHeight: 36),
-                  icon: const Icon(
-                    LineIcons.minusCircle,
-                    size: 30,
-                    color: primaryColor,
-                  ),
-                  onPressed: () {
+          ).text.bold.xl.make(),
+          HStack(
+            [
+              CustomIconButton(
+                  height: 30,
+                  width: 30,
+                  icon: LineIcons.minus,
+                  fungsi: () {
                     int jml = detailData.jumlah - 1;
                     int ttl = jml * detailData.harga;
 
                     KonfirmasiBloc cart =
                         BlocProvider.of<KonfirmasiBloc>(context);
-
-                    // if (jml <= 0) {
-                    //   cart.add(HapusCart(id: detailData.id));
-                    // }
 
                     cart.add(TambahKonfirmasi(
                         status: 'minus',
@@ -234,33 +247,22 @@ Widget produkTile(
                         total: ttl,
                         idx: idx));
                   }),
-              Container(
-                padding: const EdgeInsets.all(defaultPadding),
-                // decoration: const BoxDecoration(
-                //     color: primaryColor,
-                //     borderRadius:
-                //         BorderRadius.all(Radius.circular(defaultRadius))),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: SizedBox(
                   width: 16,
                   child: Center(
                     child: Text(
                       detailData.jumlah.toString(),
-                      style: const TextStyle(fontSize: 16, color: textColor),
-                    ),
+                    ).text.xl.make(),
                   ),
                 ),
               ),
-              IconButton(
-                  // splashRadius: 20,
-                  // constraints: const BoxConstraints(maxHeight: 20),
-                  // style:
-                  //     ElevatedButton.styleFrom(backgroundColor: primaryColor),
-                  icon: const Icon(
-                    LineIcons.plusCircle,
-                    color: primaryColor,
-                    size: 30,
-                  ),
-                  onPressed: () {
+              CustomIconButton(
+                  height: 30,
+                  width: 30,
+                  icon: LineIcons.plus,
+                  fungsi: () {
                     int jml = detailData.jumlah + 1;
                     int ttl = jml * detailData.harga;
 
@@ -278,6 +280,7 @@ Widget produkTile(
             ],
           ),
         ],
+        spacing: 5,
       ),
       const Spacer(),
       Text(
@@ -285,7 +288,46 @@ Widget produkTile(
         style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
       ),
     ],
+    spacing: 5,
   );
+}
+
+class CustomIconButton extends StatelessWidget {
+  final double width;
+  final double height;
+  final IconData icon;
+  final Function()? fungsi;
+
+  const CustomIconButton({
+    Key? key,
+    required this.width,
+    required this.height,
+    required this.icon,
+    this.fungsi,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Theme.of(context).colorScheme.tertiary,
+      borderRadius: const BorderRadius.all(Radius.circular(10)),
+      child: InkWell(
+        onTap: fungsi,
+        borderRadius: const BorderRadius.all(Radius.circular(10)),
+        splashColor: Theme.of(context).colorScheme.onTertiary,
+        child: SizedBox(
+          height: height,
+          width: width,
+          child: Center(
+              child: Icon(
+            icon,
+            color: Theme.of(context).colorScheme.onTertiary,
+            size: 15,
+          )),
+        ),
+      ),
+    );
+  }
 }
 
 Future<void> bayarTunai({required BuildContext context, required int total}) {

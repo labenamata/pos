@@ -5,6 +5,7 @@ import 'package:pos_app/bloc/image_bloc.dart';
 import 'package:pos_app/bloc/produk/produk_bloc.dart';
 import 'package:pos_app/constant.dart';
 import 'package:pos_app/page/produk/add_produk.dart';
+import 'package:pos_app/widget/drawer.dart';
 import 'package:pos_app/widget/kategori_filter.dart';
 import 'package:pos_app/page/produk/list_produk.dart';
 import 'package:pos_app/widget/navigation_bar.dart';
@@ -28,57 +29,64 @@ class _ProdukPageState extends State<ProdukPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Produk',
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        drawer: const SideMenu(
+          idx: 0,
         ),
-        centerTitle: true,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            child:
-                FilledButton(onPressed: () {}, child: const Text('Kategori')),
-          )
-        ],
-      ),
-      bottomNavigationBar: const NavMenu(
-        pageIndex: 1,
-      ),
-      body: Container(
-        padding: const EdgeInsets.all(defaultPadding),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          SearchMenu(
-              searchController: searchController,
-              fungsi: (val) {
-                context
-                    .read<ProdukBloc>()
-                    .add(SearchProduk(nama: searchController.text));
-              }),
-          const SizedBox(
-            height: defaultPadding,
+        appBar: AppBar(
+          title: const Text(
+            'Produk',
           ),
-          const KategoriFilter(
-            page: 'produk',
-          ),
-          const SizedBox(
-            height: contentPadding,
-          ),
-          Expanded(child: listProduk())
-        ]),
+          centerTitle: true,
+          actions: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child:
+                  FilledButton(onPressed: () {}, child: const Text('Kategori')),
+            )
+          ],
+        ),
+        bottomNavigationBar: const NavMenu(
+          pageIndex: 1,
+        ),
+        body: Container(
+          padding: const EdgeInsets.all(defaultPadding),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            SearchMenu(
+                searchController: searchController,
+                fungsi: (val) {
+                  context
+                      .read<ProdukBloc>()
+                      .add(SearchProduk(nama: searchController.text));
+                }),
+            const SizedBox(
+              height: defaultPadding,
+            ),
+            const KategoriFilter(
+              page: 'produk',
+            ),
+            const SizedBox(
+              height: contentPadding,
+            ),
+            Expanded(child: listProduk())
+          ]),
+        ),
+        floatingActionButton: FloatingActionButton(
+            elevation: 0,
+            onPressed: () {
+              context.read<ImageBloc>().add(GetImage(null));
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ProdukTambah()),
+              );
+            },
+            child: const Icon(
+              LineIcons.plus,
+            )),
       ),
-      floatingActionButton: FloatingActionButton(
-          elevation: 0,
-          onPressed: () {
-            context.read<ImageBloc>().add(GetImage(null));
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const ProdukTambah()),
-            );
-          },
-          child: const Icon(
-            LineIcons.plus,
-          )),
     );
   }
 }

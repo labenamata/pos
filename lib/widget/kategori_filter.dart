@@ -6,6 +6,7 @@ import 'package:pos_app/bloc/cart/cart_bloc.dart';
 import 'package:pos_app/bloc/kategori/kategori_bloc.dart';
 import 'package:pos_app/bloc/produk/produk_bloc.dart';
 import 'package:pos_app/constant.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 class KategoriFilter extends StatefulWidget {
   final String page;
@@ -24,9 +25,42 @@ class _KategoriFilterState extends State<KategoriFilter> {
   bool isRefresh = false;
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        IconButton.filled(
+    var capsuleColor = Theme.of(context).colorScheme.surfaceVariant;
+    var capsuleTextColor = Theme.of(context).colorScheme.onSurfaceVariant;
+    return HStack(
+      [
+        Expanded(
+          child: GestureDetector(
+            onTap: () {
+              showBottom(context);
+            },
+            child: VxBox(
+              child: HStack(
+                [
+                  Expanded(
+                    child: TextField(
+                      enabled: false,
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.zero,
+                        border: InputBorder.none,
+                        isDense: true,
+                        hintText: namaKategori,
+                      ),
+                    ),
+                  ),
+                  Icon(
+                    LineIcons.angleDown,
+                    color: capsuleTextColor,
+                  ),
+                ],
+              ),
+            ).rounded.p16.color(capsuleColor).make(),
+          ),
+        ),
+        const SizedBox(
+          width: Vx.dp12,
+        ),
+        FloatingActionButton(
           tooltip: 'Refresh',
           onPressed: isRefresh
               ? null
@@ -46,34 +80,10 @@ class _KategoriFilterState extends State<KategoriFilter> {
                     });
                   });
                 },
-          icon: const Icon(LineIcons.syncIcon),
-        ),
-        const SizedBox(
-          width: 5,
-        ),
-        Expanded(
-          child: GestureDetector(
-            onTap: () {
-              showBottom(context);
-            },
-            child: TextField(
-              enabled: false,
-              decoration: InputDecoration(
-                border: const OutlineInputBorder(
-                    borderRadius:
-                        BorderRadius.all(Radius.circular(defaultRadius))),
-                filled: true,
-                isDense: true,
-                hintText: namaKategori,
-                suffixIcon: const Icon(
-                  LineIcons.angleDown,
-                ),
-              ),
-            ),
-          ),
+          child: const Icon(LineIcons.syncIcon),
         ),
       ],
-    );
+    ).pOnly(top: 24, left: 24, right: 24);
   }
 
   Future<void> showBottom(BuildContext context) {
@@ -147,83 +157,3 @@ class _KategoriFilterState extends State<KategoriFilter> {
         });
   }
 }
-
-// class KategoriFilter extends StatefulWidget {
-//   const KategoriFilter({super.key});
-
-//   @override
-//   State<KategoriFilter> createState() => _KategoriFilterState();
-// }
-
-// class _KategoriFilterState extends State<KategoriFilter> {
-//   int selectedId = 0;
-//   @override
-//   Widget build(BuildContext context) {
-//     return BlocBuilder<KategoriBloc, KategoriState>(builder: (context, state) {
-//       if (state is KategoriLoading) {
-//         return const Center(child: CircularProgressIndicator());
-//       } else {
-//         KategoriLoaded kategoriLoaded = state as KategoriLoaded;
-
-//         return Builder(
-//           builder: (context) {
-//             if (kategoriLoaded.data.isEmpty) {
-//               return const Center(child: Text('Belum ada Kategori'));
-//             } else {
-//               List<Widget> katChip = [];
-//               katChip.add(
-//                 tombolKategori(
-//                     label: 'All',
-//                     isSelected: selectedId == 0,
-//                     filter: () {
-//                       setState(() {
-//                         selectedId = 0;
-//                         ProdukBloc produk =
-//                             BlocProvider.of<ProdukBloc>(context);
-//                         produk.add(GetProduk());
-//                       });
-//                     }),
-//               );
-//               katChip.addAll(kategoriLoaded.data.map((e) {
-//                 return tombolKategori(
-//                     label: e.nama,
-//                     isSelected: selectedId == e.id,
-//                     filter: () {
-//                       setState(() {
-//                         selectedId = e.id;
-
-//                         context
-//                             .read<ProdukBloc>()
-//                             .add(ProdukByKategori(idKategori: e.id));
-//                       });
-//                     });
-//               }).toList());
-//               return Wrap(alignment: WrapAlignment.start, children: katChip);
-//             }
-//           },
-//         );
-//       }
-//     });
-//   }
-
-//   Widget tombolKategori({
-//     required String label,
-//     required bool isSelected,
-//     required Function() filter,
-//   }) {
-//     return Container(
-//       padding: const EdgeInsets.only(right: defaultPadding),
-//       child: TextButton(
-//           style: ElevatedButton.styleFrom(
-//               //side: const BorderSide(color: primaryColor),
-//               foregroundColor: isSelected
-//                   ? Colors.white
-//                   : Theme.of(context).colorScheme.primary,
-//               backgroundColor: isSelected
-//                   ? Theme.of(context).colorScheme.onPrimaryContainer
-//                   : Theme.of(context).colorScheme.primaryContainer),
-//           onPressed: filter,
-//           child: Text(label)),
-//     );
-//   }
-// }

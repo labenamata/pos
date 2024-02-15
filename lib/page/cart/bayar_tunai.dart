@@ -7,6 +7,7 @@ import 'package:pos_app/bloc/konfirmasi/konfirmasi_bloc.dart';
 import 'package:pos_app/bloc/transaksi/transaksi_bloc.dart';
 import 'package:pos_app/constant.dart';
 import 'package:pos_app/page/cart/cart_page.dart';
+import 'package:pos_app/page/transaksi/transaksi_page.dart';
 
 class BayarTunai extends StatefulWidget {
   const BayarTunai({super.key});
@@ -161,7 +162,7 @@ class _BayarTunaiState extends State<BayarTunai> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const CartPage()),
+                              builder: (context) => const TransaksiPage()),
                         );
                       });
                     }

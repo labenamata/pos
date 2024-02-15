@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pos_app/constant.dart';
-import 'package:pos_app/page/drawer.dart';
+import 'package:pos_app/widget/drawer.dart';
 import 'package:pos_app/widget/grafik_sales.dart';
 import 'package:pos_app/widget/produk_sales.dart';
 import 'package:pos_app/widget/total_sales.dart';

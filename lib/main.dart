@@ -1,3 +1,4 @@
+import 'package:colorful_safe_area/colorful_safe_area.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -63,31 +64,29 @@ class _MyAppState extends State<MyApp> {
           BlocProvider<LoginBloc>(create: (context) => LoginBloc()),
           BlocProvider<UserBloc>(create: (context) => UserBloc(UserLoading())),
         ],
-        child: SafeArea(
-          child: MaterialApp(
-            title: 'Resto POS',
-            debugShowCheckedModeBanner: false,
-            theme: ThemeData(
-              useMaterial3: true,
-              fontFamily: GoogleFonts.poppins().fontFamily,
-              colorSchemeSeed: Vx.hexToColor('B0D9B1'),
-              brightness: Brightness.light,
-            ),
-            darkTheme: ThemeData(
-              useMaterial3: true,
-              fontFamily: GoogleFonts.poppins().fontFamily,
-              colorSchemeSeed: const Color(0xFF2D3250),
-              brightness: Brightness.dark,
-            ),
-            themeMode: ThemeMode.light,
-            // ignore: prefer_const_constructors
-            home: SplashScreen(),
-            localizationsDelegates: const [
-              GlobalWidgetsLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              MonthYearPickerLocalizations.delegate,
-            ],
+        child: MaterialApp(
+          title: 'Resto POS',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            useMaterial3: true,
+            fontFamily: GoogleFonts.poppins().fontFamily,
+            colorSchemeSeed: Vx.hexToColor('B0D9B1'),
+            brightness: Brightness.light,
           ),
+          darkTheme: ThemeData(
+            useMaterial3: true,
+            fontFamily: GoogleFonts.poppins().fontFamily,
+            colorSchemeSeed: Vx.hexToColor('B0D9B1'),
+            brightness: Brightness.dark,
+          ),
+          themeMode: ThemeMode.light,
+          // ignore: prefer_const_constructors
+          home: SplashScreen(),
+          localizationsDelegates: const [
+            GlobalWidgetsLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            MonthYearPickerLocalizations.delegate,
+          ],
         ));
   }
 }
